@@ -18,9 +18,6 @@ var passport = require('passport');
 //     checkForUpdates: true
 // });
 
-//classes
-var RedisStore = require('connect-redis')(expressSession);
-
 // instances
 var upload = expressMulter();
 
