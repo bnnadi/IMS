@@ -1,18 +1,15 @@
 // libraries
-var ejsMate = require('ejs-mate');
 var express = require('express');
 var expressBodyParser = require('body-parser');
 var expressCookieParser = require('cookie-parser');
 var expressDevice = require('express-device');
 var expressMulter = require('multer');
 var expressRequestParam = require('request-param');
-var expressSession = require('express-session');
 var expressJWT = require('express-jwt');
 var fs = require('fs');
 // var maxmind = require('maxmind');
 var os = require('os');
 var passport = require('passport');
-var redis = require('redis');
 // var striptags = require('striptags');
 
 
@@ -25,17 +22,8 @@ var redis = require('redis');
 var RedisStore = require('connect-redis')(expressSession);
 
 // instances
-
-var redisClient = redis.createClient(process.env.REDIS_PORT, process.env.REDIS_HOST, {
-    auth_pass: process.env.REDIS_PASS
-});
-
 var upload = expressMulter();
 
-var redisStoreOptions = {
-    client: redisClient,
-    db: parseInt(process.env.REDIS_DB),
-};
 
 Object.defineProperty(global, 'nnStack', {
     get: function() {
@@ -65,12 +53,6 @@ Object.defineProperty(global, 'nnFunction', {
 
 
 module.exports = function() {
-
-    // this.set('views', 'app/views');
-    // this.set('view engine', 'ejs');
-
-    // // Register EJS as a template engine.
-    // this.engine('ejs', ejsMate);
 
     this.locals.ENVIRONMENT = process.env.NODE_ENV || 'development';
 
@@ -107,16 +89,6 @@ module.exports = function() {
         extended: true
     }));
     this.use(expressBodyParser.json());
-
-    // this.use(expressSession({
-    //     secret: 'asdhwhnxxiou1mizxehdncfx3gx',
-    //     cookie: {
-    //         maxAge: 3 * 24 * 60 * 60 * 1000
-    //     },
-    //     resave: true,
-    //     saveUninitialized: true,
-    //     store: new RedisStore(redisStoreOptions)
-    // }));
 
     this.use(passport.initialize());
     this.use(passport.session());

@@ -17,7 +17,7 @@ var ApiKeyModel = db.api_key;
 
 controller.index = function(req, res) {
     res.sendFile('index.html', {
-        root: ROOT + '/public/ndeputa/dist'
+        root: ROOT + '/public/ndeputa/dist/'
     });
 };
 
