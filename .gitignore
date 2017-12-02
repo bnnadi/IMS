@@ -1,8 +1,8 @@
-.vscode/
-node_modules/
-public/
-data/
-
+.vscode/**
+node_modules/**
+public/**
+data/**
+test/**
 *.http
 
 .env
