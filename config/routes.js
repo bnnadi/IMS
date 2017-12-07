@@ -77,8 +77,8 @@ module.exports = function routes() {
     this.delete('/api/v1/product/:id.json', passport.authenticate('jwt', { session: false }), v1Product.deleteOne);
 
     // timesheet
-    this.get('/api/v1/timesheet', passport.authenticate('jwt', { session: false }), v1Time.Read);
-    this.get('/api/v1/timesheets', passport.authenticate('jwt', { session: false }), v1Time.ReadMany);
+    this.get('/api/v1/timesheet', passport.authenticate('jwt', { session: false }), v1Time.read);
+    this.get('/api/v1/timesheets', passport.authenticate('jwt', { session: false }), v1Time.readMany);
 
     // user
     this.get('/api/v1/user/authenticate', passport.authenticate('jwt', { session: false }), v1User.authenticate);

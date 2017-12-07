@@ -199,7 +199,7 @@ controller.before([
 
 controller.before(['deleteOne'], function(req, res, next) {
 
-    if (req.user.canDelete()) {
+    if (!req.isAuthenticated() || req.user.canDelete()) {
         res.status(401);
         res.json({
             errors: 'UNAUTHORIZED'

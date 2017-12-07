@@ -1,5 +1,5 @@
-"use strict";
-var _ = require("lodash");
+'use strict';
+var _ = require('lodash');
 var bcrypt = require('bcryptjs');
 
 module.exports = function(sequelize, DataTypes) {
@@ -84,6 +84,10 @@ module.exports = function(sequelize, DataTypes) {
 
     User.prototype.canDelete = function() {
         return (_.includes(['admin', 'pmanager'], this.accountType));
+    };
+
+    User.prototype.getAccess = function() {
+        return (this.companyId === 0) ? 'full' : (this.companyId === 1) ? 'yana' : 'willow';
     };
 
     return User;

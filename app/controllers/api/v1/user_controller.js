@@ -36,6 +36,7 @@ controller.authenticate = function(req, res, next) {
             user.email = result.email;
             user.name = result.getFullName();
             user.profile_img = '';
+            user.access = (result.companyId = 0) ? 'full' : '';
 
             res.json({
                 result: user
