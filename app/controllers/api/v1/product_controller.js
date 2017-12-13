@@ -93,12 +93,22 @@ controller.readMany = function(req, res, next) {
 
     var user = req.user || {};
 
+    // populate must be an array
     var populate = req.body.populate || '';
-
-    var limit, orderBy;
+    // Orderby needs to be an array of items to order the query by
+    // i.e. ['Task', 'Project', 'createdAt', 'DESC'],
+    var orderBy = req.query.orderBy;
+    var limit = req.query.limit || 10;
+    var offset = req.query.offset || 0;
 
     ProductModel
-        .findAndCountAll()
+        .findAndCountAll({
+            subQuery: false,
+            include: populate,
+            order: orderBy,
+            limit: limit,
+            offset: offset,
+        })
         .then(function(products) {
             res.json({
                 result: products
@@ -122,8 +132,16 @@ controller.updateOne = function(req, res, next) {
 
     ProductModel
         .findById(id)
-        .then()
-        .catch();
+        .then(function(product) {
+            res.json({
+                result: product
+            });
+        })
+        .catch(function(err) {
+            res.json({
+                error: err
+            });
+        });
 
 };
 

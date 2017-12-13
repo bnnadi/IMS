@@ -18,7 +18,7 @@ var AddressModel = db.address;
 var PhoneModel = db.phone_number;
 
 controller.authenticate = function(req, res, next) {
-    console.log(req.user);
+
     UserModel
         .findById(req.user.id)
         .then(function(result) {
@@ -52,53 +52,6 @@ controller.authenticate = function(req, res, next) {
             return;
         });
 
-};
-
-controller.createOne = function(req, res, next) {
-
-    var user = req.user || {};
-
-    var populate = req.body.populate || '';
-
-    var record = {};
-
-    record.createdById = user.id;
-    record.email = req.body.email;
-    record.first_name = req.body.first_n;
-    record.last_name = req.body.last_n;
-    record.user_type = req.body.user_type;
-    record.password = generatePsswrd();
-
-    // phone number
-    if (res.body.phone_number) {
-        record.phone_numbers = [{
-            number: res.body.phone_number
-        }];
-    }
-
-    // address
-    if (res.body.address) {
-        record.addresses = [{
-            address: res.body.address,
-            city: res.body.city,
-            state: res.body.state,
-            country: res.body.country,
-            zip: res.body.zip || null
-        }];
-    }
-
-    UserModel
-        .findOrCreate({
-            where: { email: record.email },
-            defaults: record,
-            attributes: ['id', 'email', 'user_type', 'last_name', 'first_name', 'createdAt'],
-            include: [User.Address, User.Phone]
-        })
-        .spread(function(user, created) {
-            res.json({
-                result: user.toJSON()
-            });
-        });
 };
 
 controller.readOne = function(req, res, next) {
@@ -142,30 +95,6 @@ controller.readOne = function(req, res, next) {
             res.status(404);
             res.json({
                 errors: err,
-            });
-            return;
-        });
-};
-
-controller.readMany = function(req, res, next) {
-
-    var user = req.user || {};
-
-    var populate = req.body.populate || '';
-
-    var limit, orderBy;
-
-    UserModel
-        .findAndCountAll()
-        .then(function(users) {
-            res.json({
-                result: users
-            });
-            return;
-        }).catch(function(err) {
-            res.status(404);
-            res.json({
-                errors: errors,
             });
             return;
         });
@@ -220,19 +149,6 @@ controller.before([
 
     next();
 
-});
-
-controller.before(['deleteOne'], function(req, res, next) {
-
-    if (req.user.canDelete()) {
-        res.status(401);
-        res.json({
-            errors: 'UNAUTHORIZED'
-        });
-        return;
-    }
-
-    next();
 });
 
 module.exports = controller;

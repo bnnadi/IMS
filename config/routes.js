@@ -82,9 +82,7 @@ module.exports = function routes() {
 
     // user
     this.get('/api/v1/user/authenticate', passport.authenticate('jwt', { session: false }), v1User.authenticate);
-    this.post('/api/v1/user.json', passport.authenticate('jwt', { session: false }), v1User.createOne);
     this.get('/api/v1/user.json', passport.authenticate('jwt', { session: false }), v1User.readOne);
-    this.get('/api/v1/users.json', passport.authenticate('jwt', { session: false }), v1User.readMany);
     this.put('/api/v1/user.json', passport.authenticate('jwt', { session: false }), v1User.updateOne);
     this.post('/api/v1/user/addAddress.json', passport.authenticate('jwt', { session: false }), v1User.addAddress);
     this.post('/api/v1/user/addPhoneNumber.json', passport.authenticate('jwt', { session: false }), v1User.addPhoneNumber);

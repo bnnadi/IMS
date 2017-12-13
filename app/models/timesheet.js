@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 module.exports = function(sequelize, DataTypes) {
     var Company = sequelize.models.company;
@@ -15,12 +15,9 @@ module.exports = function(sequelize, DataTypes) {
             field: 'company_id',
             allowNull: false
         },
-        timeIn: {
+        timeStamp: {
             type: DataTypes.DATE,
-        },
-        timeOut: {
-            type: DataTypes.DATE,
-            allowNull: true
+            allowNull: false
         },
     }, {
         tableName: 'timesheets',

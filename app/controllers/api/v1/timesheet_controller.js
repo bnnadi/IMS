@@ -17,10 +17,17 @@ var TimesheetModel = db.timesheet;
 controller.clockInOut = function(req, res, next) {
 
     var record = {};
-    record.timeIn = req.body.timeIn;
-    record.timeOut = req.body.timeOut;
+    record.timeStamp = req.body.timeStamp;
+    record.userId = req.body.userId;
+    record.companyId = req.body.companyId;
 
-
+    TimesheetModel
+        .create(record)
+        .spread(function(sheet, created) {
+            res.json({
+                success: true
+            });
+        });
 
 };
 
