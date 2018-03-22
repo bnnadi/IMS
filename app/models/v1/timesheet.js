@@ -6,9 +6,9 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.UUID,
             primaryKey: true
         },
-        organizationUnit_id: DataTypes.UUID,
-        authorisedByEmployee_id: DataTypes.UUID,
-        timesheetForEmployee_id: DataTypes.UUID,
+        organizationUnit_id: DataTypes.UUID, // foreign key
+        authorisedByEmployee_id: DataTypes.UUID, // foreign key
+        timesheetForEmployee_id: DataTypes.UUID, // foreign key
         start_date: DataTypes.DATE,
         end_date: DataTypes.DATE,
         other_details: DataTypes.TEXT

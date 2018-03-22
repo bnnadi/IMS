@@ -22,6 +22,7 @@ module.exports = function(sequelize, DataTypes) {
     }, {
         tableName: 'timesheets',
         timestamps: true,
+        underscored: true,
         paranoid: true
     });
 

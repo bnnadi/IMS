@@ -1,20 +1,20 @@
 'use strict';
 
 module.exports = (sequelize, DataTypes) => {
-    const RefRole = sequelize.define('ref_role', {
-        role_code:{
+    const Country = sequelize.define('country', {
+        country_code:{
             type: DataTypes.UUID,
             primaryKey: true
         },
-        role_description: DataTypes.STRING
+        country_name: DataTypes.STRING
     }, {
-        tableName: 'ref_roles',
+        tableName: 'countries',
         timestamps: true,
         underscored: true,
         paranoid: true
     });
 
-    RefRole.associate = (models) => {};
+    Country.associate = (models) => {};
     
-    return RefRole;
+    return Country;
 }
