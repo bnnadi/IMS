@@ -26,7 +26,7 @@ if (process.env.DATABASE_URL) {
 var db = {};
 
 fs
-    .readdirSync(__dirname)
+    .readdirSync(__dirname + process.env.VERSION)
     .filter(function(file) {
         return (file.indexOf('.') !== 0) && (file !== 'index.js');
     })
