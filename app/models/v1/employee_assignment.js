@@ -2,12 +2,10 @@
 
 module.exports = (sequelize, DataTypes) => {
     const EmployeeAssignment = sequelize.define('employee_assignment', {
-        employee_assignment_id:{
-            type: DataTypes.UUID,
-        },
         organizationUnit_id: DataTypes.UUID, // foreign key
+        employee_id: DataTypes.UUID, // foreign key
         date_from: {
-            DataTypes.DATE,
+            type: DataTypes.DATE,
             primaryKey: true
         },
         reportsTo_id: DataTypes.UUID, // foreign key
@@ -15,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
     }, {
         tableName: 'employee_assignments',
         timestamps: true,
+        underscored: true,
         paranoid: true
     });
 

@@ -10,6 +10,4 @@ module.exports = function() {
         maxAge: 860000
     }));
 
-
-
 };

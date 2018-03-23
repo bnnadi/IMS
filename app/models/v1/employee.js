@@ -6,8 +6,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.UUID,
             primaryKey: true
         },
+        permission_level_code: DataTypes.UUID,  // foreign key
         first_name: DataTypes.STRING,
         last_name: DataTypes.STRING,
+        email: DataTypes.STRING,
+        password: DataTypes.STRING,
         gender: DataTypes.STRING,
         dob: DataTypes.DATE,
         start_date: DataTypes.DATE,
