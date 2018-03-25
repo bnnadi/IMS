@@ -4,10 +4,11 @@ module.exports = (sequelize, DataTypes) => {
     const Timesheet = sequelize.define('timesheet', {
         timesheet_id:{
             type: DataTypes.UUID,
-            primaryKey: true
+            primaryKey: true,
+            defaultValue: DataTypes.UUIDV4
         },
         organizationUnit_id: DataTypes.UUID, // foreign key
-        authorisedByEmployee_id: DataTypes.UUID, // foreign key
+        authorizedByEmployee_id: DataTypes.UUID, // foreign key
         timesheetForEmployee_id: DataTypes.UUID, // foreign key
         start_date: DataTypes.DATE,
         end_date: DataTypes.DATE,
@@ -20,9 +21,9 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Timesheet.associate = (models) => {
-        Timesheet.hasMany(models.employee, {foreignKey: 'fk_authorisedBy', sourceKey: 'authorisedByEmployeeId'})
-        Timesheet.hasMany(models.employee, {foreignKey: 'fk_timesheetFor', sourceKey: 'timesheetForEmployeeId'})
-        Timesheet.hasMany(models.organization_unit, {foreignKey: 'fk_organizationUnit', sourceKey: 'organizationUnitId'})
+        this.belongsTo(models.employee, { as: 'authorizedBy', foreignKey: 'employee_id'})
+        this.belongsTo(models.employee, {foreignKey: 'employee_id'})
+        this.belongsTo(models.organization_unit, {foreignKey: 'organization_unit_id'})
     };
     
     return Timesheet;

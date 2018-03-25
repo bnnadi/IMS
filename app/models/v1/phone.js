@@ -3,8 +3,9 @@
 module.exports = (sequelize, DataTypes) => {
     const PhoneNumber = sequelize.define('phone_number', {
         phone_number_id:{
-            type: DataTypes.UUID,
-            primaryKey: true
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true
         },
         person_id: DataTypes.UUID, // foreign key
         phone_number: DataTypes.STRING

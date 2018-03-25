@@ -17,7 +17,12 @@ module.exports = (sequelize, DataTypes) => {
         paranoid: true
     });
 
-    EmployeeAssignment.associate = (models) => {};
+    EmployeeAssignment.associate = (models) => {
+        this.hasOne(models.organization_unit, {as: 'unitName', foreignKey: 'organizationUnit_id' })
+        this.belongsTo(models.employee, { foreignKey: 'employee_id' })
+        this.hasOne(models.employee, {as: 'supervisor', foreignKey: 'reportsTo_id' })
+        this.hasOne(models.role, {as: 'role', foreignKey: 'role_code' })
+    };
     
     return EmployeeAssignment;
 }

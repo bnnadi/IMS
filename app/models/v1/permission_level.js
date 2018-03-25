@@ -4,7 +4,8 @@ module.exports = (sequelize, DataTypes) => {
     const PermissionLevel = sequelize.define('permission_level', {
         permission_level_code:{
             type: DataTypes.UUID,
-            primaryKey: true
+            primaryKey: true,
+            defaultValue: DataTypes.UUIDV4
         },
         permission_level_description: DataTypes.STRING
     }, {

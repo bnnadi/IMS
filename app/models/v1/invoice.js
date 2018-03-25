@@ -14,7 +14,10 @@ module.exports = (sequelize, DataTypes) => {
         paranoid: true
     });
 
-    Invoice.associate = (models) => {};
+    Invoice.associate = (models) => {
+        this.hasOne(models.order, { foreignKey: 'order_id' })
+        this.hasMany(models.invoice_item, { foreignKey:'invoice_number' })
+    };
     
     return Invoice;
 }

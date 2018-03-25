@@ -38,8 +38,8 @@ controller.create = (req, res, next) => {
         .findOrCreate({
             where: { email: record.email },
             defaults: record,
-            attributes: ['employee_id', 'email', 'last_name', 'first_name', 'createdAt'],
-            include: [Employee.Address, Employee.Phone]
+            attributes: ['employee_id', 'email', 'last_name', 'first_name'],
+            include: [AddressModel, PhoneModel]
         })
         .spread((employee, created) => {
             console.log(employee);

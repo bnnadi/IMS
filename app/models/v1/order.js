@@ -4,7 +4,8 @@ module.exports = (sequelize, DataTypes) => {
     const Order = sequelize.define('order', {
         order_id:{
             type: DataTypes.UUID,
-            primaryKey: true
+            primaryKey: true,
+            defaultValue: DataTypes.UUIDV4
         },
         customer_id: DataTypes.UUID, // foreign key
         status: DataTypes.BOOLEAN
@@ -15,7 +16,10 @@ module.exports = (sequelize, DataTypes) => {
         paranoid: true
     });
 
-    Order.associate = (models) => {};
+    Order.associate = (models) => {
+        this.hasMany(models.order_item, { foreignKey:'order_id' })
+        this.belongsTo(models.customer, { foreignKey:'customer_id' })
+    };
     
     return Order;
 }

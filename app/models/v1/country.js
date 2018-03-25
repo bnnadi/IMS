@@ -3,8 +3,9 @@
 module.exports = (sequelize, DataTypes) => {
     const Country = sequelize.define('country', {
         country_id:{
-            type: DataTypes.UUID,
-            primaryKey: true
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true
         },
         country_code: DataTypes.STRING,
         country_local: DataTypes.STRING,

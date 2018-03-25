@@ -3,8 +3,9 @@
 module.exports = (sequelize, DataTypes) => {
     const Address = sequelize.define('address', {
         address_id:{
-            type: DataTypes.UUID,
-            primaryKey: true
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true
         },
         person_id: DataTypes.UUID, // foreign key
         address_line_1: DataTypes.STRING,

@@ -4,7 +4,8 @@ module.exports = (sequelize, DataTypes) => {
     const Customer = sequelize.define('customer', {
         customer_id:{
             type: DataTypes.UUID,
-            primaryKey: true
+            primaryKey: true,
+            defaultValue: DataTypes.UUIDV4
         },
         first_name: DataTypes.STRING,
         last_name: DataTypes.STRING,
@@ -24,7 +25,13 @@ module.exports = (sequelize, DataTypes) => {
         ],
     });
 
-    Customer.associate = (models) => {};
+    Customer.associate = (models) => {
+        this.hasMany(models.address, { foreignKey: 'person_id' })
+        this.hasMany(models.phone_number, { foreignKey: 'person_id' })
+        this.hasMany(models.financial_transaction, { foreignKey: 'customer_id' })
+        this.hasMany(models.order, { foreignKey:'customer_id' })
+        this.hasMany(models.payment, { foreignKey:'customer_id' })
+    };
     
     return Customer;
 }

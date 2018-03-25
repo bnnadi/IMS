@@ -4,7 +4,8 @@ module.exports = (sequelize, DataTypes) => {
     const Product = sequelize.define('product', {
         product_id:{
             type: DataTypes.UUID,
-            primaryKey: true
+            primaryKey: true,
+            defaultValue: DataTypes.UUIDV4
         },
         parent_product_id: { 
             type: DataTypes.UUID,  // foreign key
@@ -30,7 +31,11 @@ module.exports = (sequelize, DataTypes) => {
         paranoid: true
     });
 
-    Product.associate = (models) => {};
+    Product.associate = (models) => {
+        this.belongsTo(models.oragnization, {foreignKey: 'oragnization_id'})
+        this.belongsTo(models.product, {as: 'parentProduct', foreignKey: 'parent_product_id'})
+        this.hasMany(models.product, {as: 'childernProduct', foreignKey: 'parent_product_id'})
+    };
     
     return Product;
 }

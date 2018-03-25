@@ -4,7 +4,8 @@ module.exports = (sequelize, DataTypes) => {
     const Employee = sequelize.define('employee', {
         employee_id:{
             type: DataTypes.UUID,
-            primaryKey: true
+            primaryKey: true,
+            defaultValue: DataTypes.UUIDV4
         },
         permission_level_code: {
             type: DataTypes.UUID,
@@ -68,12 +69,20 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Employee.associate = (models) => {
-        Employee.belongsTo(models.timesheet, {foreignKey: 'fk_authorisedBy', targetKey: 'employee_id'})
-        Employee.belongsTo(models.timesheet, {foreignKey: 'fk_timesheetFor', targetKey: 'employee_id'});
+        this.hasMany(models.timesheet, {as: 'authorizedTimesheets', foreignKey: 'authorizedBythis_id'});
+        this.hasMany(models.timesheet, {foreignKey: 'timesheetForthis_id'});
+        this.hasMany(models.address, { foreignKey: 'person_id' })
+        this.hasMany(models.phone_number, { foreignKey: 'person_id' })
+        this.hasMany(models.internal_message_assignment, { as: 'sentMessages', foreignKey: 'msg_from_person_id' })
+        this.hasMany(models.internal_message_assignment, { as: 'receivedMessages', foreignKey: 'msg_to_person_id' })
     };
 
     Employee.prototype.getFullName = () => {
         return this.first_name + " " + this.last_name;
+    }
+
+    Employee.prototype.isManager = () => {
+        return;
     }
     
     return Employee;
