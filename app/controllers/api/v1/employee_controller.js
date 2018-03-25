@@ -5,6 +5,8 @@ var fs = require('fs');
 var jsSchema = require('js-schema');
 var generatePsswrd = require('password-generator');
 
+var Mailer = require(ROOT + '/app/helpers/mailer');
+
 // classes
 var Controller = require(ROOT + '/app/controllers/base_controller');
 
@@ -40,6 +42,14 @@ controller.create = (req, res, next) => {
             include: [Employee.Address, Employee.Phone]
         })
         .spread((employee, created) => {
+            console.log(employee);
+            var mailerOptions = {
+                from: 'hr@denadis.com',
+                to: employee.email,
+                subject: 'Welcome to the Family', 
+                html: '<h1>Welcome to the team</h1><p>Here is yoour temporay password.</p>'
+            }
+            Mailer.send()
             res.status(201)
             res.json({
                 result: employee.get({plain: true})
