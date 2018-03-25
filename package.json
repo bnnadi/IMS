@@ -5,11 +5,11 @@
   "main": "server.js",
   "scripts": {
     "test": "mocha",
-    "start": "node server.js && cd public/ndeputa && ng build"
+    "start": "node server.js && cd public/ && ng build -aot"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bnnadi/IMS.git"
+    "url": "git+https://github.com/bnnadi/ndeputa.git"
   },
   "keywords": [
     "ims",
@@ -21,9 +21,9 @@
   "author": "Bisike Nnadi",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/bnnadi/IMS/issues"
+    "url": "https://github.com/bnnadi/ndeputa/issues"
   },
-  "homepage": "https://github.com/bnnadi/IMS#readme",
+  "homepage": "https://github.com/bnnadi/ndeputa#readme",
   "dependencies": {
     "async": "2.6.0",
     "aws-sdk": "^2.161.0",
@@ -49,6 +49,7 @@
     "passport": "0.4.0",
     "passport-jwt": "3.0.1",
     "passport-local": "1.0.0",
+    "passport-localapikey": "0.0.3",
     "password-generator": "2.2.0",
     "randomstring": "1.1.5",
     "redis": "2.8.0",

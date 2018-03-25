@@ -6,28 +6,75 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.UUID,
             primaryKey: true
         },
-        permission_level_code: DataTypes.UUID,  // foreign key
-        first_name: DataTypes.STRING,
-        last_name: DataTypes.STRING,
-        email: DataTypes.STRING,
-        password: DataTypes.STRING,
-        gender: DataTypes.STRING,
-        dob: DataTypes.DATE,
-        start_date: DataTypes.DATE,
-        end_date: DataTypes.DATE,
-        address: DataTypes.TEXT,
-        other_details: DataTypes.TEXT
+        permission_level_code: {
+            type: DataTypes.UUID,
+            references: {
+                model: PermissionLevel,
+                key: 'permission_level_code',
+            }
+        },  // foreign key
+        first_name: { type: DataTypes.STRING },
+        last_name: { type: DataTypes.STRING },
+        email: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        password: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        gender: {
+            type:   Sequelize.ENUM,
+            values: ['male', 'female', 'other']
+          },
+        dob: { type: DataTypes.DATE },
+        profile_img: { type: DataTypes.STRING },
+        start_date: { 
+            type: DataTypes.DATE,
+            defaultValue:  new Date() 
+        },
+        end_date: {
+            type: DataTypes.DATE,
+            allowNull: true,
+            defaultValue: null,
+            validate: {
+                isDate: true
+            }
+        },
+        other_details: { type: DataTypes.TEXT }
     }, {
         tableName: 'employees',
         timestamps: true,
         underscored: true,
-        paranoid: true
+        paranoid: true,
+        indexes: [
+            {
+                unique: true,
+                fields: ['email']
+              },
+        ],
+        scopes: {
+            deleted: {
+                where: {
+                  deleted: true
+                }
+              },
+              activeUsers: {
+                where: { 
+                    end_date: null 
+                }
+              },
+        }
     });
 
     Employee.associate = (models) => {
         Employee.belongsTo(models.timesheet, {foreignKey: 'fk_authorisedBy', targetKey: 'employee_id'})
         Employee.belongsTo(models.timesheet, {foreignKey: 'fk_timesheetFor', targetKey: 'employee_id'});
     };
+
+    Employee.prototype.getFullName = () => {
+        return this.first_name + " " + this.last_name;
+    }
     
     return Employee;
 }

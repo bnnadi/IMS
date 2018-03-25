@@ -1,9 +1,8 @@
 // libraries
 var _ = require('lodash');
 var async = require('async');
-var bwipjs = require('bwip-js');
 var fs = require('fs');
-var image = require(BACKEND + '/helpers/image');
+var jsSchema = require('js-schema');
 
 // classes
 var Controller = require(ROOT + '/app/controllers/base_controller');
@@ -11,57 +10,52 @@ var Controller = require(ROOT + '/app/controllers/base_controller');
 // instances
 var controller = new Controller();
 
-var ProductModel = require(BACKEND + '/models').product;
+const db = require(BACKEND + '/models');
 
-controller.createOne = function(req, res, next) {
+var ProductModel = db.product;
+
+controller.createOne = (req, res, next) => {
     var user = req.user || {};
 
-    var record = {};
-    record.createdById = user.user_id || user._id;
-    record.companyId = req.body.company_id;
-    record.description = req.body.description;
-    record.qty = req.body.qty;
+    var record = options = {};
 
-    if (req.file) {
-        console.log(req.file);
-        // image.saveImage();
-    }
+    record.product_name = req.body.product_name;
+    record.qty = req.body.qty;
+    record.description = req.body.description;
+    if (req.body.parent_product_id)
+        record.parent_product_id = req.body.parent_product_id;
+
 
     ProductModel
-        .create(record)
-        .then(function(product) {
-            res.json({
-                result: product
-            });
-            return;
+        .findOrCreate({
+            where: { email: record.email },
+            defaults: record,
+            attributes: ['employee_id', 'email', 'last_name', 'first_name', 'createdAt'],
+            include: [Employee.Address, Employee.Phone]
         })
-        .catch(function(err) {
-            res.status(404);
+        .spread((product, created) => {
+            res.status(201)
             res.json({
-                error: err
-            });
-            return;
+                result: product.get({plain: true})
+            })
         });
 };
 
-controller.readOne = function(req, res, next) {
+controller.readOne = (req, res, next) => {
+
     var user = req.user || {};
-
-    var populate = req.body.populate || '';
-
     var id = req.query.id;
 
-    // validate the parameters
     var schema = jsSchema({
-        id: Number,
+        '?id': /^[a-f\d]{24}$/i,
     });
 
     var invalid = schema.errors({
         id: id
     });
-
+        
     if (invalid) {
-
+        
         var errors = ['NNC-01001'];
         // res.nnBunyan(errors);
         console.log(nnLine, new Date());
@@ -70,33 +64,20 @@ controller.readOne = function(req, res, next) {
             errors: errors,
         });
         return;
-
+        
     }
 
     ProductModel
-        .findById(id)
-        .then(function(product) {
-            res.json({
-                result: product
-            });
-            return;
-        }).catch(function(err) {
-            res.status(404);
-            res.json({
-                errors: errors,
-            });
-            return;
-        });
+        .findById()
+        .then(product => {})
+        .catch(err => {})
 };
 
-controller.readMany = function(req, res, next) {
-
+controller.readMany = (req, res, next) => {
     var user = req.user || {};
 
-    // populate must be an array
-    var populate = req.body.populate || '';
-    // Orderby needs to be an array of items to order the query by
-    // i.e. ['Task', 'Project', 'createdAt', 'DESC'],
+    var id = req.query.id || user.id;
+
     var orderBy = req.query.orderBy;
     var limit = req.query.limit || 10;
     var offset = req.query.offset || 0;
@@ -109,101 +90,100 @@ controller.readMany = function(req, res, next) {
             limit: limit,
             offset: offset,
         })
-        .then(function(products) {
+        .then(sheets => {
             res.json({
-                result: products
+                result: sheets
             });
             return;
-        }).catch(function(err) {
-            res.status(404);
-            res.json({
-                errors: errors,
-            });
-            return;
-        });
-};
-
-controller.updateOne = function(req, res, next) {
-    var user = req.user || {};
-
-    var populate = req.body.populate || '';
-
-    var id = req.body.id;
-
-    ProductModel
-        .findById(id)
-        .then(function(product) {
-            res.json({
-                result: product
-            });
         })
-        .catch(function(err) {
+        .catch(err => {
+            res.status(500);
             res.json({
-                error: err
+                errors: err
             });
-        });
-
+            return;
+        })
 };
 
-controller.deleteOne = function(req, res, next) {
-
+controller.updateOne = (req, res, next) => {
     var user = req.user || {};
-
     var id = req.params.id;
 
-};
+    var schema = jsSchema({
+        '?id': /^[a-f\d]{24}$/i,
+    });
 
-controller.generateBarcode = function(req, res, next) {
-    var user = req.user || {};
-
-    var populate = req.body.populate || '';
-
-    var id = req.body.id;
+    var invalid = schema.errors({
+        id: id
+    });
+        
+    if (invalid) {
+        
+        var errors = ['NNC-01001'];
+        // res.nnBunyan(errors);
+        console.log(nnLine, new Date());
+        res.status(400);
+        res.json({
+            errors: errors,
+        });
+        return;
+        
+    }
+    var query = {};
+    query.where = {
+        product_id: id
+    }
 
     ProductModel
-        .findById(id)
-        .then(function(product) {
+        .update(query)
+        .then(product => {})
+        .catch(err => {})
+};
 
-            if (!product) {
-                res.status(404);
-                res.json({
-                    errors: 'Record not Found',
-                });
-                return;
-            }
+controller.deleteOne = (req, res, next) => {
+    var user = req.user || {};
+    var id = req.params.id;
 
-            bwipjs.toBuffer({
-                bcid: 'code128',
-                text: product.barcode,
-                height: 10,
-                includetext: false,
-            }, function(err, png) {
-                if (err) {
-                    res.status(404);
-                    res.json({
-                        errors: err,
-                    });
-                    return;
-                } else {
-                    res.send(png);
-                    return;
-                }
-            });
-        })
-        .catch(function(err) {
-            res.status(404);
-            res.json({
-                errors: err,
-            });
-            return;
+    var schema = jsSchema({
+        '?id': /^[a-f\d]{24}$/i,
+    });
+
+    var invalid = schema.errors({
+        id: id
+    });
+        
+    if (invalid) {
+        
+        var errors = ['NNC-01001'];
+        // res.nnBunyan(errors);
+        console.log(nnLine, new Date());
+        res.status(400);
+        res.json({
+            errors: errors,
         });
+        return;
+        
+    }
+
+    var query = {};
+    query.where = {
+        product_id: id
+    }
+
+    ProductModel
+        .destory(query)
+        .then(product => {
+            res.status(204);
+            return;
+        })
+        .catch(err => {})
 };
 
 controller.before([
     '*'
-], function(req, res, next) {
+], (req, res, next) => {
 
-    if (!req.isAuthenticated()) {
+    if (!req.isAuthenticated() || !req.user.isManager()) {
         res.status(401);
         res.json({
             errors: 'UNAUTHORIZED'
@@ -214,20 +194,5 @@ controller.before([
     next();
 
 });
-
-controller.before(['deleteOne'], function(req, res, next) {
-
-    if (!req.isAuthenticated() || req.user.canDelete()) {
-        res.status(401);
-        res.json({
-            errors: 'UNAUTHORIZED'
-        });
-        return;
-    }
-
-    next();
-});
-
-
 
 module.exports = controller;

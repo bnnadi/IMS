@@ -11,41 +11,11 @@ var Controller = require(ROOT + '/app/controllers/base_controller');
 var controller = new Controller();
 
 const db = require(BACKEND + '/models');
-var OrderModel = db.order;
+var InvoiceModel = db.invoice;
 
 controller.create = (req, res, next) => {};
 
-controller.readOne = (req, res, next) => {
-    var user = req.user || {};
-
-    var id = req.params.id;
-
-    var schema = jsSchema({
-        '?id': /^[a-f\d]{24}$/i,
-    });
-
-    var invalid = schema.errors({
-        id: id
-    });
-        
-    if (invalid) {
-        
-        var errors = ['NNC-01001'];
-        // res.nnBunyan(errors);
-        console.log(nnLine, new Date());
-        res.status(400);
-        res.json({
-            errors: errors,
-        });
-        return;
-        
-    }
-
-    OrderModel
-        .findOne()
-        .then(order => {})
-        .catch(err => {})
-};
+controller.readOne = (req, res, next) => {};
 
 controller.readMany = (req, res, next) => {
     var user = req.user || {};
@@ -54,7 +24,7 @@ controller.readMany = (req, res, next) => {
     var limit = req.query.limit || 10;
     var offset = req.query.offset || 0;
 
-    OrderModel
+    InvoiceModel
         .findAndCountAll({
             subQuery: false,
             include: populate,
@@ -78,83 +48,80 @@ controller.readMany = (req, res, next) => {
 };
 
 controller.updateOne = (req, res, next) => {
-    var user = req.user || {};
-
-    var id= req.params.id;
-
-    var schema = jsSchema({
-        '?id': /^[a-f\d]{24}$/i,
-    });
-
-    var invalid = schema.errors({
-        id: id
-    });
-        
-    if (invalid) {
-        
-        var errors = ['NNC-01001'];
-        // res.nnBunyan(errors);
-        console.log(nnLine, new Date());
-        res.status(400);
-        res.json({
-            errors: errors,
+        // validate the parameters
+        var schema = jsSchema({
+            id: Number,
         });
-        return;
-        
-    }
+    
+        var invalid = schema.errors({
+            id: user.id
+        });
+    
+        if (invalid) {
+    
+            var errors = ['NNC-01001'];
+            // res.nnBunyan(errors);
+            console.log(nnLine, new Date());
+            res.status(400);
+            res.json({
+                errors: invalid,
+            });
+            return;
+    
+        }
 };
 
 controller.deleteOne = (req, res, next) => {
+    res.status(503);
+    return;
+};
+
+controller.download = (req, res, next) => {
     var user = req.user || {};
-
     var id = req.params.id;
-
+    
+    // validate the parameters
     var schema = jsSchema({
-        '?id': /^[a-f\d]{24}$/i,
+        id: Number,
     });
-
+    
     var invalid = schema.errors({
-        id: id
+        id: user.id
     });
-        
+    
     if (invalid) {
-        
-        var errors = ['NNC-01001'];
+    
+         var errors = ['NNC-01001'];
         // res.nnBunyan(errors);
         console.log(nnLine, new Date());
         res.status(400);
         res.json({
-            errors: errors,
+                errors: invalid,
         });
         return;
-        
+    
     }
 
-    var query = {};
-    query.where = {
-        order_id: id
-    }
-
-    OrderModel
-        .destroy(query)
-        .then(unit => {
-            res.status(204);
+    InvoiceModel
+        .findById(id)
+        .then(invoice => {
+            console.log(invoice)
             return;
         })
         .catch(err => {
             res.status(400);
             res.json({
-                errors: errors,
+                errors: err,
             });
             return;
-        }
+        })
 };
 
 controller.before([
     '*'
 ], (req, res, next) => {
 
-    if (!req.isAuthenticated() || !req.user.isManager()) {
+    if (!req.isAuthenticated()) {
         res.status(401);
         res.json({
             errors: 'UNAUTHORIZED'

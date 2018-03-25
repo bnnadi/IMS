@@ -3,7 +3,7 @@ var path = require('path');
 
 module.exports = function() {
 
-    this.use(express.static(FRONTEND + '/ndeputa/dist'));
+    this.use(express.static(FRONTEND + '/dist'));
 
     // adds additional logging information to the console
     if (process.env.LOG_LINES === 'true') {

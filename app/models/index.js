@@ -17,21 +17,22 @@ if (env === 'production') {
     config.logging = false;
 }
 
-if (process.env.DATABASE_URL) {
+if (env === 'production') {
     var sequelize = new Sequelize(process.env.DATABASE_URL, config);
 } else {
     var sequelize = new Sequelize(config.database_name, config.username, config.password, config);
 }
 
-var db = {};
+var db = {},
+dir = __dirname +'/'+ process.env.VERSION;
 
 fs
-    .readdirSync(__dirname + process.env.VERSION)
+    .readdirSync(dir)
     .filter(function(file) {
         return (file.indexOf('.') !== 0) && (file !== 'index.js');
     })
     .forEach(function(file) {
-        var model = sequelize.import(path.join(__dirname, file));
+        var model = sequelize.import(path.join(dir, file));
         db[model.name] = model;
     });
 

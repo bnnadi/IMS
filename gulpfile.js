@@ -26,23 +26,15 @@ gulp.task('default', function() {
     return gutil.log('Gulp is running!');
 });
 
-gulp.task('v1-test-db', function() {
+gulp.task('test-db', function() {
     return db.sequelize.sync({ force: true, match: /_test$/ }).catch();
 });
 
-gulp.task('v1-generate-api-key', function() {
-    var ApiKey = db.api_key;
-    return ApiKey
-        .create()
-        .then(function(instance) {
-            console.log(instance);
-        })
-        .catch(function(err) {
-            console.log(err);
-        });
+gulp.task('local-db', function() {
+    return db.sequelize.sync({ force: true }).catch();
 });
 
-gulp.task('v1-create-company', function() {
+gulp.task('v0-create-company', function() {
     var Company = db.company;
     var companies = [{
             companyName: "Yana"
@@ -62,7 +54,7 @@ gulp.task('v1-create-company', function() {
         });
 });
 
-gulp.task('v1-create-admin', function() {
+gulp.task('v0-create-admin', function() {
     var User = db.user;
     var Address = db.user_address;
     var Phone = db.user_phone_number;
@@ -87,7 +79,7 @@ gulp.task('v1-create-admin', function() {
         });
 });
 
-gulp.task('v1-genrate-api-key', function() {
+gulp.task('v0-genrate-api-key', function() {
     var ApiKey = db.api_key;
     var now = new Date();
     var expiredDate = new Date(now.setFullYear(now.getFullYear() + 1));

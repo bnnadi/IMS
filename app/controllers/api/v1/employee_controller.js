@@ -2,6 +2,8 @@
 var _ = require('lodash');
 var async = require('async');
 var fs = require('fs');
+var jsSchema = require('js-schema');
+var generatePsswrd = require('password-generator');
 
 // classes
 var Controller = require(ROOT + '/app/controllers/base_controller');
@@ -9,126 +11,77 @@ var Controller = require(ROOT + '/app/controllers/base_controller');
 // instances
 var controller = new Controller();
 
-var EmployeeModel = require(BACKEND + '/models').user;
+const db = require(BACKEND + '/models');
 
-controller.createOne = function(req, res, next) {
+var EmployeeModel = db.employee;
+var AddressModel = db.address;
+var PhoneModel = db.phone_number;
+var OrganizationModel = db.organization;
+var OrganizationUnitModel = db.organization_units;
 
+controller.create = (req, res, next) => {
     var user = req.user || {};
 
-    var populate = req.body.populate || '';
+    var record = options = {};
 
-    var record = {};
-
-    record.createdById = user.id;
     record.email = req.body.email;
-    record.first_name = req.body.first_n;
-    record.last_name = req.body.last_n;
-    record.user_type = req.body.user_type;
+    record.first_name = req.body.first_name;
+    record.last_name = req.body.last_name;
+    record.gender = req.body.gender;
+    record.dob = req.body.dob;
+    record.other_details = req.body.other_details;
     record.password = generatePsswrd();
-
-    // phone number
-    if (res.body.phone_number) {
-        record.phone_numbers = [{
-            number: res.body.phone_number
-        }];
-    }
-
-    // address
-    if (res.body.address) {
-        record.addresses = [{
-            address: res.body.address,
-            city: res.body.city,
-            state: res.body.state,
-            country: res.body.country,
-            zip: res.body.zip || null
-        }];
-    }
 
     EmployeeModel
         .findOrCreate({
             where: { email: record.email },
             defaults: record,
-            attributes: ['id', 'email', 'user_type', 'last_name', 'first_name', 'createdAt'],
-            include: [User.Address, User.Phone]
+            attributes: ['employee_id', 'email', 'last_name', 'first_name', 'createdAt'],
+            include: [Employee.Address, Employee.Phone]
         })
-        .spread(function(user, created) {
+        .spread((employee, created) => {
+            res.status(201)
+            res.json({
+                result: employee.get({plain: true})
+            })
+        });
+};
+
+controller.readOne = (req, res, next) => {
+
+    var user = req.user || {};
+
+    var id = req.query.id || user.id;
+
+    // validate the parameters
+    var schema = jsSchema({
+        id: /^[a-f\d]{24}$/i,
+    });
+
+    var invalid = schema.errors({
+        id: id
+    });
+
+    if (invalid) {
+        
+        // res.nnBunyan(errors);
+        console.log(nnLine, new Date());
+        res.status(400);
+        res.json({
+            errors: invalid,
+        });
+        return;
+
+    }
+
+    EmployeeModel
+        .findById(id)
+        .then((user) => {
             res.json({
                 result: user.toJSON()
             });
-        });
-
-};
-
-controller.readOne = function(req, res, next) {
-
-    var user = req.user || {};
-
-};
-
-controller.readMany = function(req, res, next) {
-
-    var user = req.user || {};
-
-    var limit, orderBy;
-};
-controller.updateOne = function(req, res, next) {
-
-    var user = req.user || {};
-
-};
-
-controller.addAddress = function(req, res, next) {
-
-    var user = req.user || {};
-};
-
-controller.addPhoneNumber = function(req, res, next) {
-
-    var user = req.user || {};
-};
-
-controller.updateAddress = function(req, res, next) {
-
-    var user = req.user || {};
-};
-
-controller.updatePhoneNumber = function(req, res, next) {
-
-    var user = req.user || {};
-};
-
-controller.removeAddress = function(req, res, next) {
-
-    var user = req.user || {};
-};
-
-controller.removePhoneNumber = function(req, res, next) {
-
-    var user = req.user || {};
-};
-
-controller.generateQRCode = function(req, res, next) {
-
-    var user = req.user || {};
-
-    var populate = req.body.populate || '';
-
-    var id = req.body.id;
-
-    UserModel
-        .findById(id)
-        .then(function(user) {
-            if (!user) {
-                res.status(404);
-                res.json({
-                    errors: 'Record not Found',
-                });
-                return;
-            }
-
-            // TODO: add QR Code logic here
-        })
-        .catch(function(err) {
+            return;
+        }).catch((err) => {
             res.status(404);
             res.json({
                 errors: err,
@@ -137,17 +90,256 @@ controller.generateQRCode = function(req, res, next) {
         });
 };
 
-controller.deleteOne = function(req, res, next) {
+controller.updateOne = (req, res, next) => {
 
     var user = req.user || {};
 
+    // validate the parameters
+    var schema = jsSchema({
+        id: Number,
+    });
+
+    var invalid = schema.errors({
+        id: user.id
+    });
+
+    if (invalid) {
+
+        var errors = ['NNC-01001'];
+        // res.nnBunyan(errors);
+        console.log(nnLine, new Date());
+        res.status(400);
+        res.json({
+            errors: invalid,
+        });
+        return;
+
+    }
+
+    var record = {};
+
+    EmployeeModel
+        .update(record,{
+            where: {
+                employee_id: user.id
+            },
+            returning: true,
+            paranoid: true,
+            plain: true
+        })
+        .then((user) => {
+            console.log(user);
+            res.json({
+                result: user
+            });
+            return;
+        })
+        .catch(err => {
+            res.status(500);
+            res.json({
+                errors: err
+            });
+            return;
+        });
+};
+
+controller.addAddress = (req, res, next) => {
+
+    var user = req.user || {};
+
+
+    var record = {};
+
+    AddressModel
+        .create(record,{
+            returning: true,
+            paranoid: true,
+            plain: true
+        })
+        .spread((address, created) => {
+            console.log(address.get({plain: true}))
+            console.log(created);
+            res.json({
+                result: address
+            });
+            return;
+        })
+};
+
+controller.addPhoneNumber = (req, res, next) => {
+
+    var user = req.user || {};
+
+    var record = {};
+
+    record.person_id = user.id;
+
+    PhoneModel
+        .create(record,{
+            returning: true,
+            paranoid: true,
+            plain: true
+        })
+        .spread((phone, created) => {
+            console.log(phone.get({plain: true}))
+            console.log(created)
+            res.json({
+                result: address
+            });
+            return;
+        })
+};
+
+controller.updateAddress = (req, res, next) => {
+
+    var user = req.user || {};
+    var record = {},
+    recordId;
+
+    record.address_line_1 = ;
+
+    AddressModel
+        .update(record, {
+            where: {
+                address_id: recordId,
+                person_id: user.id
+            },
+            returning: true,
+            paranoid: true,
+            plain: true
+        })
+        .then((address) => {
+            console.log(address);
+            res.json({
+                result: address
+            });
+            return;
+        })
+        .catch(err => {
+            res.status(500);
+            res.json({
+                errors: err
+            });
+            return;
+        });
+};
+
+controller.updatePhoneNumber = (req, res, next) => {
+
+    var user = req.user || {};
+    var record = {},
+    recordId;
+
+    record.phone_number = ;
+
+    PhoneModel
+        .update(record, {
+            where: {
+                phone_number_id: recordId,
+                person_id: user.id
+            },
+            returning: true,
+            paranoid: true,
+            plain: true
+        })
+        .then((phone) => {
+            console.log(phone)
+            res.json({
+                result: phone
+            });
+            return;
+        })
+        .catch(err => {
+            res.status(500);
+            res.json({
+                errors: err
+            });
+            return;
+        })
+};
+
+controller.removeAddress = (req, res, next) => {
+
+    var user = req.user || {};
+    var record = {};
+
+    record.where = {
+        address_id: req.,
+        person_id: user.id
+    }
+
+    AddressModel
+        .destory(record)
+        .then(result => {
+            res.status(204);
+            return;
+        })
+        .catch(err => {
+            res.status(500);
+            res.json({
+                errors: err
+            });
+            return;
+        })
+};
+
+controller.removePhoneNumber = (req, res, next) => {
+
+    var user = req.user || {};
+    var record = {};
+
+    record.where = {
+        phone_number_id: req.,
+        person_id: id
+    }
+
+    PhoneModel
+        .destory(record)
+        .then(result => {
+            res.status(204);
+            return;
+        })
+        .catch(err => {
+            res.status(500);
+            res.json({
+                errors: err
+            });
+            return;
+        })
+};
+
+controller.deleteOne = (req, res, next) => {
+    var user = req.user || {};
+    var id = req.params.id;
+
+    // TODO: need to make sure certain people are allowed to do this
+
+    var record = {};
+
+    record.where = {
+        employee_id: id
+    }
+
+    EmployeeModel
+        .destory(record)
+        .then(result => {
+            res.status(204);
+            return;
+        })
+        .catch(err => {
+            res.status(500);
+            res.json({
+                errors: err
+            });
+            return;
+        })
 };
 
 controller.before([
     '*'
-], function(req, res, next) {
+], (req, res, next) => {
 
-    if (!req.isAuthenticated()) {
+    if (!req.isAuthenticated() || !req.user.isManager()) {
         res.status(401);
         res.json({
             errors: 'UNAUTHORIZED'
@@ -157,19 +349,6 @@ controller.before([
 
     next();
 
-});
-
-controller.before(['deleteOne'], function(req, res, next) {
-
-    if (req.user.canDelete()) {
-        res.status(401);
-        res.json({
-            errors: 'UNAUTHORIZED'
-        });
-        return;
-    }
-
-    next();
 });
 
 module.exports = controller;

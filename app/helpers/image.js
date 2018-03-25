@@ -6,7 +6,7 @@ var s3 = new AWS.S3();
 
 var Image = {};
 
-Image.saveImage = function(file) {
+Image.saveImage = (file) => {
     var fileName = file['file-name'];
     var fileType = file['file-type'];
     var s3Params = {

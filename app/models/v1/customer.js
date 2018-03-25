@@ -15,7 +15,13 @@ module.exports = (sequelize, DataTypes) => {
         tableName: 'customers',
         timestamps: true,
         underscored: true,
-        paranoid: true
+        paranoid: true,
+        indexes: [
+            {
+                unique: true,
+                fields: ['email']
+              },
+        ],
     });
 
     Customer.associate = (models) => {};

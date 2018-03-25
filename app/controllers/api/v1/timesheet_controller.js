@@ -1,4 +1,5 @@
 // libraries
+var _ = require('lodash');
 var async = require('async');
 var fs = require('fs');
 var jsSchema = require('js-schema');
@@ -9,68 +10,130 @@ var Controller = require(ROOT + '/app/controllers/base_controller');
 // instances
 var controller = new Controller();
 
-var db = require(BACKEND + '/models');
+const db = require(BACKEND + '/models');
 
-var UserModel = db.user;
 var TimesheetModel = db.timesheet;
 
-controller.clockInOut = function(req, res, next) {
+controller.clockInOut = (req, res, next) => {
 
-    var record = {};
-    record.timeStamp = req.body.timeStamp;
-    record.userId = req.body.userId;
-    record.companyId = req.body.companyId;
-
-    TimesheetModel
-        .create(record)
-        .spread(function(sheet, created) {
-            res.json({
-                success: true
-            });
+    var email = req.body.email;
+    
+    // validate the parameters
+    var schema = jsSchema({
+        email: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+    });
+    
+    var invalid = schema.errors({
+        email: email
+    });
+    
+    if (invalid) {
+    
+        var errors = ['NNC-01001'];
+        // res.nnBunyan(errors);
+        console.log(nnLine, new Date());
+        res.status(400);
+        res.json({
+            errors: errors,
         });
-
-};
-
-controller.read = function(req, res, next) {
-    var user = req.user;
-
-    var id = req.query.id;
-    var userId = req.query.userId || user.id;
+        return;
+    
+    }
 
     TimesheetModel
-        .findById(id)
-        .then(function(sheet) {
+        .findOrCreate({where: {email: email}})
+        .then(time => {
             res.json({
-                result: user.toJSON()
+                result: time
             });
             return;
         })
-        .catch(function(err) {
-            console.log(nnLine, new Date());
-            res.status(404);
+        .catch(err => {
+            res.status(500);
             res.json({
-                errors: err,
+                errors: err
             });
             return;
-        });
+        })
 
 };
 
-controller.readMany = function(req, res, next) {
+controller.readOne = (req, res, next) => {
+    var user = req.user || {};
 
-    var user = req.user;
+    var id = req.query.id || user.id;
 
-    async.series({
-        security: function(cb) {
-            if ('admin' === user.accountType) {
-                return cb(null);
-            }
-        }
+    // validate the parameters
+    var schema = jsSchema({
+        '?id': /^[a-f\d]{24}$/i,
     });
+        
+    var invalid = schema.errors({
+        id: id
+    });
+        
+    if (invalid) {
+        
+        var errors = ['NNC-01001'];
+        // res.nnBunyan(errors);
+        console.log(nnLine, new Date());
+        res.status(400);
+        res.json({
+            errors: errors,
+        });
+        return;
+        
+    }
+
+    TimesheetModel
+        .findById(id)
+        .then(time => {
+            res.json({
+                result: time
+            });
+            return;
+        })
+        .catch(err => {
+            res.status(500);
+            res.json({
+                errors: err
+            });
+            return;
+        })
+};
+
+controller.readMany = (req, res, next) => {
+    var user = req.user || {};
+
+    var orderBy = req.query.orderBy;
+    var limit = req.query.limit || 10;
+    var offset = req.query.offset || 0;
+
+    TimesheetModel
+        .findAndCountAll({
+            subQuery: false,
+            include: populate,
+            order: orderBy,
+            limit: limit,
+            offset: offset,
+        })
+        .then(sheets => {
+            res.json({
+                result: sheets
+            });
+            return;
+        })
+        .catch(err => {
+            res.status(500);
+            res.json({
+                errors: err
+            });
+            return;
+        })
 };
 
 controller.before([
-    'read',
+    'readOne',
     'readMany'
 ], function(req, res, next) {
 
