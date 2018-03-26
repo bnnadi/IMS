@@ -11,13 +11,15 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.UUID, // foreign key
             validate: {
                 isUUID: 4,
-            }
+            },
+            
         },
         msg_to_person_id: {
             type: DataTypes.UUID, // foreign key
             validate: {
                 isUUID: 4,
-            }
+            },
+            
         },
     }, {
         tableName: 'internal_message_assignments',

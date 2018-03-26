@@ -11,7 +11,8 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.UUID, // foreign key
             validate: {
                 isUUID: 4,
-            }
+            },
+            
         },
         phone_number: DataTypes.STRING
     }, {

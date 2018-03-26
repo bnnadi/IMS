@@ -11,13 +11,15 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.UUID, // foreign key
             validate: {
                 isUUID: 4,
-            }
+            },
+            
         },
         parent_organization_unit_id: {
             type: DataTypes.UUID, // foreign key
             validate: {
                 isUUID: 4,
-            }
+            },
+            
         },
         organization_unit_name: DataTypes.STRING,
         other_details: DataTypes.TEXT

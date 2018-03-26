@@ -11,7 +11,8 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.UUID, // foreign key
             validate: {
                 isUUID: 4,
-            }
+            },
+            
         },
         status: DataTypes.BOOLEAN
     }, {
@@ -22,8 +23,8 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Order.associate = (models) => {
-        Order.hasMany(models.order_item, { foreignKey:'order_id' })
-        Order.belongsTo(models.customer, { foreignKey:'customer_id' })
+        Order.hasMany(models.order_item, { as: 'orderItem', foreignKey:'order_id', onDelete: 'CASCADE' })
+        Order.belongsTo(models.customer, { as: 'customer', foreignKey:'customer_id' })
     };
     
     return Order;

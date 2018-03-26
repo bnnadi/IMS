@@ -11,19 +11,19 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.UUID, // foreign key
             validate: {
                 isUUID: 4,
-            }
+            },
         },
         authorizedByEmployee_id: {
             type: DataTypes.UUID, // foreign key
             validate: {
                 isUUID: 4,
-            }
+            },
         },
         timesheetForEmployee_id: {
             type: DataTypes.UUID, // foreign key
             validate: {
                 isUUID: 4,
-            }
+            },
         },
         start_date: DataTypes.DATE,
         end_date: DataTypes.DATE,

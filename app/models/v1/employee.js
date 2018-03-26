@@ -90,13 +90,14 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Employee.associate = (models) => {
-        Employee.hasMany(models.timesheet, {as: 'authorizedTimesheets', foreignKey: 'authorizedBythis_id'});
-        Employee.hasMany(models.timesheet, {foreignKey: 'timesheetForthis_id'});
-        Employee.hasMany(models.address, { foreignKey: 'person_id' });
-        Employee.hasMany(models.phone_number, { foreignKey: 'person_id' });
+        Employee.hasMany(models.timesheet, { as: 'authorizedTimesheets', foreignKey: 'authorizedBythis_id'});
+        Employee.hasMany(models.timesheet, { as: 'timesheets', foreignKey: 'timesheetForthis_id', onDelete: 'CASCADE',});
+        Employee.hasMany(models.address, { as: 'address', foreignKey: 'person_id', onDelete: 'CASCADE', });
+        Employee.hasMany(models.employee_assignment, { foreignKey: 'employee_id', onDelete: 'CASCADE', });
+        Employee.hasMany(models.employee_assignment, { foreignKey: 'reportsTo_id', onDelete: 'SET NULL', allowNull: true, defaultValue: null });
+        Employee.hasMany(models.phone_number, {as: 'phone', foreignKey: 'person_id', onDelete: 'CASCADE', });
         Employee.hasMany(models.internal_message_assignment, { as: 'sentMessages', foreignKey: 'msg_from_person_id' });
         Employee.hasMany(models.internal_message_assignment, { as: 'receivedMessages', foreignKey: 'msg_to_person_id' });
-        Employee.hasMany(models.permission_level, { foreignKey: 'permission_level_code' });
     };
 
     Employee.beforeValidate((employee, options) => {

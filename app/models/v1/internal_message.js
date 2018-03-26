@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.UUID, // foreign key
             validate: {
                 isUUID: 4,
-            }
+            },
         },
         message_subject: DataTypes.STRING,
         message_text: DataTypes.TEXT,
@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
         InternalMessage.belongsTo(models.internal_message_assignment, { as: 'messageAssignment', foreignKey: 'internal_message_assignment_id' })
     };
 
-    InternalMessage.removeAttribute('id')
+    InternalMessage.removeAttribute('id');
     
     return InternalMessage;
 }

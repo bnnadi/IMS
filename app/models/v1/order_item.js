@@ -11,13 +11,15 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.UUID, // foreign key
             validate: {
                 isUUID: 4,
-            }
+            },
+            
         },
         product_id: {
             type: DataTypes.UUID, // foreign key
             validate: {
                 isUUID: 4,
-            }
+            },
+            
         },
         price: DataTypes.STRING,
         quantity: DataTypes.INTEGER
@@ -29,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     OrderItem.associate = (models) => {
-        OrderItem.hasOne(models.product, { foreignKey: 'product_id' });
+        // OrderItem.hasOne(models.product, { foreignKey: 'product_id' });
     };
 
     OrderItem.removeAttribute('id');

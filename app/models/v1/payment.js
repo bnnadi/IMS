@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.UUID, // foreign key
             validate: {
                 isUUID: 4,
-            }
+            },
         },
         amount_due: DataTypes.STRING,
         reminder_sent_yn: DataTypes.STRING,

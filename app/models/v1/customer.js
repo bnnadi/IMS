@@ -26,11 +26,11 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Customer.associate = (models) => {
-        Customer.hasMany(models.address, { foreignKey: 'person_id' })
-        Customer.hasMany(models.phone_number, { foreignKey: 'person_id' })
-        Customer.hasMany(models.financial_transaction, { foreignKey: 'customer_id' })
-        Customer.hasMany(models.order, { foreignKey:'customer_id' })
-        Customer.hasMany(models.payment, { foreignKey:'customer_id' })
+        Customer.hasMany(models.address, { as: 'address', foreignKey: 'person_id', onDelete: 'CASCADE', })
+        Customer.hasMany(models.phone_number, { as: 'phone', foreignKey: 'person_id', onDelete: 'CASCADE', })
+        Customer.hasMany(models.financial_transaction, { as: 'financial', foreignKey: 'customer_id', onDelete: 'CASCADE', })
+        Customer.hasMany(models.order, { as: 'order', foreignKey:'customer_id', onDelete: 'CASCADE', })
+        Customer.hasMany(models.payment, { as: 'payment', foreignKey:'customer_id', onDelete: 'CASCADE', })
     };
     
     return Customer;

@@ -74,7 +74,7 @@ module.exports = function(done) {
 
         done(null, {
             'id': user.id,
-            'accountType': user.accountType
+            'permission_level_code': user.permission_level_code
         });
     });
 

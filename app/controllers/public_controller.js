@@ -132,7 +132,7 @@ controller.login = function(req, res, next) {
 
             var user = {
                 id: result.id,
-                accountType: result.accountType,
+                permission_level_code: result.permission_level_code,
                 exp: Math.floor(Date.now() / 1000) + (60 * 60)
             };
 

@@ -13,7 +13,8 @@ var config = {
     "username": process.env.DB_USERNAME,
     "password": process.env.DB_PASSWORD,
     "dialect": process.env.DB_DIALECT,
-    "port": process.env.DB_PORT
+    "port": process.env.DB_PORT,
+    // 'pool': {max: 1}
 };
 var chance = new Chance();
 var sequelize = new Sequelize(config.database_name, config.username, config.password, config);
@@ -30,8 +31,12 @@ gulp.task('test-db', function() {
     return db.sequelize.sync({ force: true, match: /_test$/ }).catch();
 });
 
-gulp.task('local-db', function() {
+gulp.task('local-db-force', function() {
     return db.sequelize.sync({ force: true }).catch();
+});
+
+gulp.task('local-db', function() {
+    return db.sequelize.sync().catch();
 });
 
 gulp.task('v0-create-company', function() {
@@ -115,20 +120,16 @@ gulp.task('v1-create-organization', () => {
         ];
         Organization
             .bulkCreate(organizations)
-            .then((result) => {
-                cb(result);
+            .then(() => { // Notice: There are no arguments here, as of right now you'll have to...
+                return Organization.findAll();
+            }).then(organizations => {
+                cb(organizations) // ... in order to get the array of user objects
             })
-            .catch((err) => {
-                cb(err);
-            });
         }
     }, (result, err) => {
-        if (err)
-            return;
-        if (!result.organizations)
-            return;
 
-        result.organizations.forEach(org => {
+        result.forEach(org => {
+            console.log(org)
             var organizationUnits = [
                 {
                     organization_id: org.organization_id,
@@ -159,10 +160,10 @@ gulp.task('v1-create-organization', () => {
             OrganizationUnit
                 .bulkCreate(organizationUnits)
                 .then((result) => {
-                    cb(result);
+                    console.log(result);
                 })
                 .catch((err) => {
-                    cb(err);
+                    console.log(err);
                 });
         })
         
@@ -258,7 +259,7 @@ gulp.task('v1-create-transaction-types', () => {
     return Transaction
         .bulkCreate(types)
         .then((types) => {
-            console.log(types.get({plain:true}));
+            console.log(types);
         })
         .catch((err) => {
             console.log(err);
@@ -270,8 +271,8 @@ gulp.task('v1-create-admin', () => {
 
     var admin = {
         email: 'admin@example.com',
-        firstName: chance.first(),
-        lastName: chance.last(),
+        first_name: chance.first(),
+        last_name: chance.last(),
         password: 'password1',
         permission_level_code: 4
     };
@@ -280,7 +281,7 @@ gulp.task('v1-create-admin', () => {
     return Employee
         .create(admin)
         .then((admin) => {
-            console.log(admin.get({plain:true}));
+            console.log(admin);
         })
         .catch((err) => {
             console.log(err);
@@ -292,8 +293,8 @@ gulp.task('v1-create-guard', () => {
 
     var guard = {
         email: 'guard@example.com',
-        firstName: chance.first(),
-        lastName: chance.last(),
+        first_name: chance.first(),
+        last_name: chance.last(),
         password: 'password1',
         permission_level_code: 1
     };
@@ -308,10 +309,41 @@ gulp.task('v1-create-guard', () => {
                 state_county_province: chance.state({ full: true }),
                 country: chance.country({ full: true }),
             });
-            guard.addPhoneNumber({
+            guard.addPhone({
                 phone_number: chance.phone({ formatted: false })
             });
-            console.log(guard.get({plain:true}));
+            console.log(guard);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+});
+
+gulp.task('v1-create-sale', () => {
+    var Employee = db.employee;
+
+    var guard = {
+        email: 'sale@example.com',
+        first_name: chance.first(),
+        last_name: chance.last(),
+        password: 'password1',
+        permission_level_code: 1
+    };
+
+
+    return Employee
+        .create(sale)
+        .then((sale) => {
+            sale.addAddress({
+                address_line_1: chance.address(),
+                town_city: chance.city(),
+                state_county_province: chance.state({ full: true }),
+                country: chance.country({ full: true }),
+            });
+            sale.addPhone({
+                phone_number: chance.phone({ formatted: false })
+            });
+            console.log(sale);
         })
         .catch((err) => {
             console.log(err);
