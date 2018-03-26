@@ -27,8 +27,8 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     InternalMessageAssignment.associate = (models) => {
-        this.belongsTo(models.employee, { as: 'sender', foreignKey: 'msg_from_person_id' })
-        this.belongsTo(models.employee, { as: 'receiver', foreignKey: 'msg_to_person_id' })
+        InternalMessageAssignment.belongsTo(models.employee, { as: 'sender', foreignKey: 'msg_from_person_id' })
+        InternalMessageAssignment.belongsTo(models.employee, { as: 'receiver', foreignKey: 'msg_to_person_id' })
     };
     
     return InternalMessageAssignment;

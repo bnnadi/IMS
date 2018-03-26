@@ -3,9 +3,9 @@
 module.exports = (sequelize, DataTypes) => {
     const OrderItem = sequelize.define('order_item', {
         order_item_id:{
-            type: DataTypes.UUID,
+            type: DataTypes.INTEGER,
             primaryKey: true,
-            defaultValue: DataTypes.UUIDV4
+            autoIncrement: true
         },
         order_id: {
             type: DataTypes.UUID, // foreign key
@@ -29,8 +29,10 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     OrderItem.associate = (models) => {
-        this.hasOne(models.product, {foreignKey: 'product_id'});
+        OrderItem.hasOne(models.product, { foreignKey: 'product_id' });
     };
+
+    OrderItem.removeAttribute('id');
     
     return OrderItem;
 }

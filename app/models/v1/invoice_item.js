@@ -9,9 +9,9 @@ module.exports = (sequelize, DataTypes) => {
             }
         },
         order_item_id: {
-            type: DataTypes.UUID, // foreign key
+            type: DataTypes.INTEGER, // foreign key
             validate: {
-                isUUID: 4,
+                isInt: true,
             }
         },
         quantity: DataTypes.INTEGER,
@@ -24,10 +24,11 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     InvoiceItem.associate = (models) => {
-        this.hasOne(models.order_item, {foreignKey: 'order_item_id'});
-        this.belongsTo(models.invoice, {foreignKey: 'invoice_number'})
+        InvoiceItem.hasOne(models.order_item, { foreignKey: 'order_item_id' });
+        InvoiceItem.belongsTo(models.invoice, { foreignKey: 'invoice_number' })
     };
 
     InvoiceItem.removeAttribute('id');
     
     return InvoiceItem;
+}

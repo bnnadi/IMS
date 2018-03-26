@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     InternalMessage.associate = (models) => {
-        this.belongsTo(models.internal_message_assignment, { as: 'messageAssignment', foreignKey: 'internal_message_assignment_id' })
+        InternalMessage.belongsTo(models.internal_message_assignment, { as: 'messageAssignment', foreignKey: 'internal_message_assignment_id' })
     };
 
     InternalMessage.removeAttribute('id')

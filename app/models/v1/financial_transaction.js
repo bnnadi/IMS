@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
                 isUUID: 4,
             }
         },
-        transaction_type_id: DataTypes.INTERGER, // foreign key
+        transaction_type_id: DataTypes.INTEGER, // foreign key
         transaction_date: DataTypes.DATE,
         transaction_comment:DataTypes.TEXT,
         other_transaction_details: DataTypes.TEXT
@@ -37,10 +37,10 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     FinancialTransaction.associate = (models) => {
-        this.belongsTo(models.customer, { foreignKey: 'customer_id' })
-        this.hasOne(models.payment, { foreignKey: 'payment_id' })
-        this.hasOne(models.invoice, { foreignKey: 'invoice_number' })
-        this.hasOne(models.transaction_type, { foreignKey: 'transaction_type_id' })
+        FinancialTransaction.belongsTo(models.customer, { foreignKey: 'customer_id' })
+        FinancialTransaction.hasOne(models.payment, { foreignKey: 'payment_id' })
+        FinancialTransaction.hasOne(models.invoice, { foreignKey: 'invoice_number' })
+        FinancialTransaction.hasOne(models.transaction_type, { foreignKey: 'transaction_type_id' })
     };
     
     return FinancialTransaction;

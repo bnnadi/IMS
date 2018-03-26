@@ -31,6 +31,9 @@ module.exports = (sequelize, DataTypes) => {
                 min: 1
             }
         },
+        product_code: { 
+            type: DataTypes.STRING, 
+        },
         description: DataTypes.TEXT
     }, {
         tableName: 'products',
@@ -40,9 +43,9 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Product.associate = (models) => {
-        this.belongsTo(models.oragnization, {foreignKey: 'oragnization_id'})
-        this.belongsTo(models.product, {as: 'parentProduct', foreignKey: 'parent_product_id'})
-        this.hasMany(models.product, {as: 'childernProduct', foreignKey: 'parent_product_id'})
+        Product.belongsTo(models.oragnization, {foreignKey: 'oragnization_id'})
+        Product.belongsTo(models.product, {as: 'parentProduct', foreignKey: 'parent_product_id'})
+        Product.hasMany(models.product, {as: 'childernProduct', foreignKey: 'parent_product_id'})
     };
     
     return Product;

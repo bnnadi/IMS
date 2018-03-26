@@ -29,8 +29,8 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     OrganizationUnit.associate = (models) => {
-        this.belongsTo(models.organization_unit, {as: 'parentUnit', foreignKey: 'parent_organization_unit_id'})
-        this.belongsTo(models.organization, {foreignKey: 'organization_id'});
+        OrganizationUnit.belongsTo(models.organization_unit, {as: 'parentUnit', foreignKey: 'parent_organization_unit_id'})
+        OrganizationUnit.belongsTo(models.organization, {foreignKey: 'organization_id'});
     };
     
     return OrganizationUnit;

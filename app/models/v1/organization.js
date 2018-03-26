@@ -18,8 +18,8 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Organization.associate = (models) => {
-        this.hasMany(models.organization_unit, {foreignKey: 'organization_id'});
-        this.hasMany(models.product, {foreignKey: 'organization_id'});
+        Organization.hasMany(models.organization_unit, {foreignKey: 'organization_id'});
+        Organization.hasMany(models.product, {foreignKey: 'organization_id'});
     };
     
     return Organization;
