@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true
         },
-        role_description: DataTypes.STRING
+        role_description: DataTypes.STRING(50)
     }, {
         tableName: 'roles',
         timestamps: true,

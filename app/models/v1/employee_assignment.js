@@ -2,14 +2,34 @@
 
 module.exports = (sequelize, DataTypes) => {
     const EmployeeAssignment = sequelize.define('employee_assignment', {
-        organizationUnit_id: DataTypes.UUID, // foreign key
-        employee_id: DataTypes.UUID, // foreign key
+        organizationUnit_id: { 
+            type: DataTypes.UUID, // foreign key
+            validate: {
+                isUUID: 4,
+            }
+        },
+        employee_id: { 
+            type:DataTypes.UUID, // foreign key
+            validate: {
+                isUUID: 4,
+            }
+        },
         date_from: {
             type: DataTypes.DATE,
             primaryKey: true
         },
-        reportsTo_id: DataTypes.UUID, // foreign key
-        role_code: DataTypes.UUID // foreign key
+        reportsTo_id: {
+            type: DataTypes.UUID, // foreign key
+            validate: {
+                isUUID: 4,
+            }
+        },
+        role_code: { 
+            type: DataTypes.INTEGER, // foreign key
+            validate: {
+                isInt: true,
+            }
+        }
     }, {
         tableName: 'employee_assignments',
         timestamps: true,
@@ -23,6 +43,8 @@ module.exports = (sequelize, DataTypes) => {
         this.hasOne(models.employee, {as: 'supervisor', foreignKey: 'reportsTo_id' })
         this.hasOne(models.role, {as: 'role', foreignKey: 'role_code' })
     };
+
+    EmployeeAssignment.removeAttribute('id')
     
     return EmployeeAssignment;
 }

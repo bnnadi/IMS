@@ -7,9 +7,24 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             defaultValue: DataTypes.UUIDV4
         },
-        organizationUnit_id: DataTypes.UUID, // foreign key
-        authorizedByEmployee_id: DataTypes.UUID, // foreign key
-        timesheetForEmployee_id: DataTypes.UUID, // foreign key
+        organizationUnit_id: {
+            type: DataTypes.UUID, // foreign key
+            validate: {
+                isUUID: 4,
+            }
+        },
+        authorizedByEmployee_id: {
+            type: DataTypes.UUID, // foreign key
+            validate: {
+                isUUID: 4,
+            }
+        },
+        timesheetForEmployee_id: {
+            type: DataTypes.UUID, // foreign key
+            validate: {
+                isUUID: 4,
+            }
+        },
         start_date: DataTypes.DATE,
         end_date: DataTypes.DATE,
         other_details: DataTypes.TEXT

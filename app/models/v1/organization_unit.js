@@ -7,8 +7,18 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             defaultValue: DataTypes.UUIDV4
         },
-        organization_id: DataTypes.UUID, // foreign key
-        parent_organization_unit_id: DataTypes.UUID, // foreign key
+        organization_id: {
+            type: DataTypes.UUID, // foreign key
+            validate: {
+                isUUID: 4,
+            }
+        },
+        parent_organization_unit_id: {
+            type: DataTypes.UUID, // foreign key
+            validate: {
+                isUUID: 4,
+            }
+        },
         organization_unit_name: DataTypes.STRING,
         other_details: DataTypes.TEXT
     }, {

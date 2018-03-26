@@ -4,8 +4,16 @@ module.exports = (sequelize, DataTypes) => {
     const InvoiceItem = sequelize.define('invoice_item', {
         invoice_number:{
             type: DataTypes.UUID, // foreign key
+            validate: {
+                isUUID: 4,
+            }
         },
-        order_item_id: DataTypes.UUID, // foreign key
+        order_item_id: {
+            type: DataTypes.UUID, // foreign key
+            validate: {
+                isUUID: 4,
+            }
+        },
         quantity: DataTypes.INTEGER,
         total_cost: DataTypes.STRING
     }, {

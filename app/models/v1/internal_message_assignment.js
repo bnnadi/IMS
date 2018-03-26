@@ -7,8 +7,18 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             defaultValue: DataTypes.UUIDV4
         },
-        msg_from_person_id: DataTypes.UUID, // foreign key
-        msg_to_person_id: DataTypes.UUID, // foreign key
+        msg_from_person_id: {
+            type: DataTypes.UUID, // foreign key
+            validate: {
+                isUUID: 4,
+            }
+        },
+        msg_to_person_id: {
+            type: DataTypes.UUID, // foreign key
+            validate: {
+                isUUID: 4,
+            }
+        },
     }, {
         tableName: 'internal_message_assignments',
         timestamps: true,

@@ -7,7 +7,12 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             defaultValue: DataTypes.UUIDV4
         },
-        customer_id: DataTypes.UUID, // foreign key
+        customer_id: {
+            type: DataTypes.UUID, // foreign key
+            validate: {
+                isUUID: 4,
+            }
+        },
         status: DataTypes.BOOLEAN
     }, {
         tableName: 'orders',

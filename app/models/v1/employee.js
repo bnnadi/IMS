@@ -1,4 +1,6 @@
 'use strict';
+var _ = require('lodash');
+var bcrypt = require('bcryptjs');
 
 module.exports = (sequelize, DataTypes) => {
     const Employee = sequelize.define('employee', {
@@ -8,17 +10,32 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: DataTypes.UUIDV4
         },
         permission_level_code: {
-            type: DataTypes.UUID,
-            references: {
-                model: PermissionLevel,
-                key: 'permission_level_code',
+            type: DataTypes.INTEGER,
+            validate: {
+                isInt: true,
             }
-        },  // foreign key
-        first_name: { type: DataTypes.STRING },
-        last_name: { type: DataTypes.STRING },
+        },  
+        first_name: { 
+            type: DataTypes.STRING(50),
+            allowNull: false,
+            validate: {
+              len: [0, 50],
+            }
+         },
+        last_name: { 
+            type: DataTypes.STRING(100),
+            allowNull: false,
+            validate: {
+              len: [0, 100],
+            }
+         },
         email: {
             type: DataTypes.STRING,
             allowNull: false,
+            unique: true,
+            validate: {
+                isEmail: true
+            }
         },
         password: {
             type: DataTypes.STRING,
@@ -30,6 +47,10 @@ module.exports = (sequelize, DataTypes) => {
           },
         dob: { type: DataTypes.DATE },
         profile_img: { type: DataTypes.STRING },
+        last_login_at: {
+            type: DataTypes.DATE,
+            defaultValue: null
+        },
         start_date: { 
             type: DataTypes.DATE,
             defaultValue:  new Date() 
@@ -71,19 +92,38 @@ module.exports = (sequelize, DataTypes) => {
     Employee.associate = (models) => {
         this.hasMany(models.timesheet, {as: 'authorizedTimesheets', foreignKey: 'authorizedBythis_id'});
         this.hasMany(models.timesheet, {foreignKey: 'timesheetForthis_id'});
-        this.hasMany(models.address, { foreignKey: 'person_id' })
-        this.hasMany(models.phone_number, { foreignKey: 'person_id' })
-        this.hasMany(models.internal_message_assignment, { as: 'sentMessages', foreignKey: 'msg_from_person_id' })
-        this.hasMany(models.internal_message_assignment, { as: 'receivedMessages', foreignKey: 'msg_to_person_id' })
+        this.hasMany(models.address, { foreignKey: 'person_id' });
+        this.hasMany(models.phone_number, { foreignKey: 'person_id' });
+        this.hasMany(models.internal_message_assignment, { as: 'sentMessages', foreignKey: 'msg_from_person_id' });
+        this.hasMany(models.internal_message_assignment, { as: 'receivedMessages', foreignKey: 'msg_to_person_id' });
+        this.hasMany(models.permission_level, { foreignKey: 'permission_level_code' });
+    };
+
+    Employee.beforeValidate((employee, options) => {
+        employee.password = bcrypt.hashSync(employee.password, bcrypt.genSaltSync());
+    });
+
+    Employee.beforeCreate((employee, options) => {
+        if (!employee.permission_level_code) {
+            employee.permission_level_code = 1;
+        }
+    });
+
+    Employee.prototype.isValidPassword = (password) => {
+        return bcrypt.compareSync(password, this.password);
     };
 
     Employee.prototype.getFullName = () => {
-        return this.first_name + " " + this.last_name;
+        return [this.firstName, this.lastName].join(' ');
     }
 
     Employee.prototype.isManager = () => {
-        return;
-    }
+        return this.permission_level_code > 3;
+    };
+
+    Employee.prototype.canDelete = () => {
+        return (_.includes([3, 4], this.permission_level_code));
+    };
     
     return Employee;
 }

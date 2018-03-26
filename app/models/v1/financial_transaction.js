@@ -7,10 +7,25 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             defaultValue: DataTypes.UUIDV4
         },
-        customer_id: DataTypes.UUID, // foreign key
-        invoice_number: DataTypes.UUID, // foreign key
-        payment_id: DataTypes.UUID, // foreign key
-        transaction_type_id: DataTypes.UUID, // foreign key
+        customer_id: {
+            type: DataTypes.UUID, // foreign key
+            validate: {
+                isUUID: 4,
+            }
+        },
+        invoice_number: {
+            type: DataTypes.UUID, // foreign key
+            validate: {
+                isUUID: 4,
+            }
+        },
+        payment_id: {
+            type: DataTypes.UUID, // foreign key
+            validate: {
+                isUUID: 4,
+            }
+        },
+        transaction_type_id: DataTypes.INTERGER, // foreign key
         transaction_date: DataTypes.DATE,
         transaction_comment:DataTypes.TEXT,
         other_transaction_details: DataTypes.TEXT

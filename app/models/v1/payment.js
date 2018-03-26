@@ -7,7 +7,12 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             defaultValue: DataTypes.UUIDV4
         },
-        customer_id: DataTypes.UUID, // foreign key
+        customer_id: {
+            type: DataTypes.UUID, // foreign key
+            validate: {
+                isUUID: 4,
+            }
+        },
         amount_due: DataTypes.STRING,
         reminder_sent_yn: DataTypes.STRING,
         date_reminder_sent: DataTypes.DATE,

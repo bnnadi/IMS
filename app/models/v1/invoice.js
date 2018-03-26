@@ -6,7 +6,12 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.UUID,
             primaryKey: true
         },
-        order_id: DataTypes.UUID, // foreign key
+        order_id: {
+            type: DataTypes.UUID, // foreign key
+            validate: {
+                isUUID: 4,
+            }
+        },
     }, {
         tableName: 'invoices',
         timestamps: true,

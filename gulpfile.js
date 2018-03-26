@@ -98,3 +98,222 @@ gulp.task('v0-genrate-api-key', function() {
             console.log(err);
         });
 });
+
+gulp.task('v1-create-organization', () => {
+    var Organization = db.organization;
+    var OrganizationUnit = db.organization_unit;
+    async.series({
+        organizations: (cb) => {
+            var organizations = [{
+                organization_name: "Yana",
+                address: chance.address(),
+            },
+            {
+                organization_name: "Willow",
+                address: chance.address(),
+            }
+        ];
+        Organization
+            .bulkCreate(organizations)
+            .then((result) => {
+                cb(result);
+            })
+            .catch((err) => {
+                cb(err);
+            });
+        }
+    }, (result, err) => {
+        if (err)
+            return;
+        if (!result.organizations)
+            return;
+
+        result.organizations.forEach(org => {
+            var organizationUnits = [
+                {
+                    organization_id: org.organization_id,
+                    organization_unit_name: "Accounting and Finance",
+                },
+                {
+                    organization_id: org.organization_id,
+                    organization_unit_name: "Production",
+                },
+                {
+                    organization_id: org.organization_id,
+                    organization_unit_name: "Human Resource",
+                },
+                {
+                    organization_id: org.organization_id,
+                    organization_unit_name: "Marketing",
+                },
+                {
+                    organization_id: org.organization_id,
+                    organization_unit_name: "Research and Development",
+                },
+                {
+                    organization_id: org.organization_id,
+                    organization_unit_name: "Security",
+                }
+            ]
+
+            OrganizationUnit
+                .bulkCreate(organizationUnits)
+                .then((result) => {
+                    cb(result);
+                })
+                .catch((err) => {
+                    cb(err);
+                });
+        })
+        
+    })
+    
+});
+
+
+gulp.task('v1-create-permission-levels', () => {
+    var Permission = db.permission_level;
+
+    var permissions = [
+        {
+            permission_level_code: 1,
+            permission_level_description: 'Self Read/Write'
+        },
+        {
+            permission_level_code: 2,
+            permission_level_description: 'Other Read/Write'
+        },
+        {
+            permission_level_code: 3,
+            permission_level_description: 'Other Read/Write/Delete'
+        },
+        {
+            permission_level_code: 4,
+            permission_level_description: 'Full Access'
+        }
+    ];
+
+    return Permission
+        .bulkCreate(permissions)
+        .then(function(result) {
+            console.log(result);
+        })
+        .catch(function(err) {
+            console.log(err);
+        });
+
+});
+
+gulp.task('v1-create-roles', () => {
+    var Role = db.role;
+
+    var roles = [
+        {
+            role_description: 'CEO'
+        },
+        {
+            role_description: 'Product Manager'
+        },
+        {
+            role_description: 'Sales Manager'
+        },
+        {
+            role_description: 'Security Manager'
+        },
+        {
+            role_description: 'Sales Agent'
+        },
+        {
+            role_description: 'Factory Worker'
+        },
+        {
+            role_description: 'Security Agent'
+        },
+    ];
+
+    return Role
+        .bulkCreate(roles)
+        .then(function(result) {
+            console.log(result);
+        })
+        .catch(function(err) {
+            console.log(err);
+        });
+
+});
+
+gulp.task('v1-create-transaction-types', () => {
+    var Transaction = db.transaction_type;
+
+    var types = [
+        {
+            transaction_type_name: 'cash'
+        },
+        {
+            transaction_type_name: 'credit'
+        }
+    ];
+
+
+    return Transaction
+        .bulkCreate(types)
+        .then((types) => {
+            console.log(types.get({plain:true}));
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+});
+
+gulp.task('v1-create-admin', () => {
+    var Employee = db.employee;
+
+    var admin = {
+        email: 'admin@example.com',
+        firstName: chance.first(),
+        lastName: chance.last(),
+        password: 'password1',
+        permission_level_code: 4
+    };
+
+
+    return Employee
+        .create(admin)
+        .then((admin) => {
+            console.log(admin.get({plain:true}));
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+});
+
+gulp.task('v1-create-guard', () => {
+    var Employee = db.employee;
+
+    var guard = {
+        email: 'guard@example.com',
+        firstName: chance.first(),
+        lastName: chance.last(),
+        password: 'password1',
+        permission_level_code: 1
+    };
+
+
+    return Employee
+        .create(guard)
+        .then((guard) => {
+            guard.addAddress({
+                address_line_1: chance.address(),
+                town_city: chance.city(),
+                state_county_province: chance.state({ full: true }),
+                country: chance.country({ full: true }),
+            });
+            guard.addPhoneNumber({
+                phone_number: chance.phone({ formatted: false })
+            });
+            console.log(guard.get({plain:true}));
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+});
