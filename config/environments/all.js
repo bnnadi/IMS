@@ -5,11 +5,12 @@ var expressCookieParser = require('cookie-parser');
 var expressDevice = require('express-device');
 var expressMulter = require('multer');
 var expressRequestParam = require('request-param');
-var expressJWT = require('express-jwt');
+var expressSession = require('express-session');
 var fs = require('fs');
 // var maxmind = require('maxmind');
 var os = require('os');
 var passport = require('passport');
+var redis = require('redis');
 // var striptags = require('striptags');
 
 
@@ -18,7 +19,19 @@ var passport = require('passport');
 //     checkForUpdates: true
 // });
 
+// classes
+var RedisStore = require('connect-redis')(expressSession);
+
 // instances
+var redisClient = redis.createClient(process.env.REDIS_PORT, process.env.REDIS_HOST, {
+    auth_pass: process.env.REDIS_PASS
+});
+
+var redisStoreOptions = {
+    client: redisClient,
+    db: parseInt(process.env.REDIS_DB)
+}
+
 var upload = expressMulter();
 
 
@@ -86,6 +99,16 @@ module.exports = function() {
         extended: true
     }));
     this.use(expressBodyParser.json());
+
+    this.use(expressSession({
+		secret: 'asdhwhnxxiou1mizxehdncfx3gx',
+		cookie: {
+			maxAge: 3 * 24 * 60 * 60 * 1000
+		},
+		resave: true,
+		saveUninitialized: true,
+		store: new RedisStore(redisStoreOptions)
+	}));
 
     this.use(passport.initialize());
     this.use(passport.session());

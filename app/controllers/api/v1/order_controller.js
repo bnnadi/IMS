@@ -13,7 +13,7 @@ var controller = new Controller();
 const db = require(BACKEND + '/models');
 var OrderModel = db.order;
 
-controller.create = (req, res, next) => {};
+controller.createOne = (req, res, next) => {};
 
 controller.readOne = (req, res, next) => {
     var user = req.user || {};
@@ -147,7 +147,7 @@ controller.deleteOne = (req, res, next) => {
                 errors: errors,
             });
             return;
-        }
+        })
 };
 
 controller.before([

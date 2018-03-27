@@ -4,7 +4,6 @@ ROOT = __dirname;
 CONFIG = __dirname + '/config';
 BACKEND = __dirname + '/app';
 FRONTEND = __dirname + '/public';
-
 // core libs
 var dotenv = require('dotenv').config();
 var express = require('express');

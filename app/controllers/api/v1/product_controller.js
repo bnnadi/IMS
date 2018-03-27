@@ -179,6 +179,8 @@ controller.deleteOne = (req, res, next) => {
         .catch(err => {})
 };
 
+controller.generateBarcode = (req, res, next) => {};
+
 controller.before([
     '*'
 ], (req, res, next) => {

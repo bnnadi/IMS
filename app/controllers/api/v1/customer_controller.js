@@ -15,7 +15,7 @@ var CustomerModel = db.customer;
 var AddressModel = db.address;
 var PhoneModel = db.phone_number;
 
-controller.create = (req, res, next) => {
+controller.createOne = (req, res, next) => {
     var user = req.user || {};
 
     var record = options = {};
@@ -196,7 +196,7 @@ controller.addPhoneNumber = (req, res, next) => {
 
     var record = {};
 
-    record.person_id = user.id;
+    record.person_id = req.params.id;
 
     PhoneModel
         .findOrCreate(record,{
@@ -218,15 +218,15 @@ controller.updateAddress = (req, res, next) => {
 
     var user = req.user || {};
     var record = {},
-    recordId;
+    id, recordId;
 
-    record.address_line_1 = ;
+    // record.address_line_1 = ;
 
     AddressModel
         .update(record, {
             where: {
                 address_id: recordId,
-                person_id: user.id
+                person_id: id
             },
             returning: true,
             paranoid: true,
@@ -252,15 +252,15 @@ controller.updatePhoneNumber = (req, res, next) => {
 
     var user = req.user || {};
     var record = {},
-    recordId;
+    id, recordId;
 
-    record.phone_number = ;
+    // record.phone_number = ;
 
     PhoneModel
         .update(record, {
             where: {
                 phone_number_id: recordId,
-                person_id: user.id
+                person_id: id
             },
             returning: true,
             paranoid: true,
@@ -285,11 +285,12 @@ controller.updatePhoneNumber = (req, res, next) => {
 controller.removeAddress = (req, res, next) => {
 
     var user = req.user || {};
-    var record = {};
+    var record = {},
+    id, recordId;
 
     record.where = {
-        address_id: req.,
-        person_id: user.id
+        address_id: recordId,
+        person_id: id
     }
 
     AddressModel
@@ -310,10 +311,11 @@ controller.removeAddress = (req, res, next) => {
 controller.removePhoneNumber = (req, res, next) => {
 
     var user = req.user || {};
-    var record = {};
+    var record = {},
+    id, recordId;
 
     record.where = {
-        phone_number_id: req.,
+        phone_number_id: recordId,
         person_id: id
     }
 

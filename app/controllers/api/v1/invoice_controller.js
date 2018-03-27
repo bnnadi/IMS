@@ -13,7 +13,7 @@ var controller = new Controller();
 const db = require(BACKEND + '/models');
 var InvoiceModel = db.invoice;
 
-controller.create = (req, res, next) => {};
+controller.createOne = (req, res, next) => {};
 
 controller.readOne = (req, res, next) => {};
 

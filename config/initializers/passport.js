@@ -2,13 +2,10 @@
 var _ = require('lodash');
 var bcrypt = require('bcryptjs');
 var passport = require('passport');
-var passportJWT = require('passport-jwt');
 var passportAPIKEY = require('passport-localapikey');
 
 // strategies
 var LocalStrategy = require('passport-local').Strategy;
-var JWTStrategy = passportJWT.Strategy;
-var ExtractJwt = passportJWT.ExtractJwt;
 var LocalAPIKeyStrategy = passportAPIKEY.Strategy;
 
 module.exports = function(done) {
@@ -19,7 +16,7 @@ module.exports = function(done) {
 
         username.toLowerCase().replace(/^[ \t]+|[ \t]+$/ig, '');
 
-        var UserModel = require(BACKEND + '/models').user;
+        var UserModel = require(BACKEND + '/models').employee;
 
         UserModel
             .findOne({
@@ -27,10 +24,13 @@ module.exports = function(done) {
             })
             .then(function(user) {
 
+                console.log(user)
+
                 if (!user) { return done(null, false); }
                 if (!user.isValidPassword(password)) { return done(null, false); }
 
-                // user.lastloginAt = new Date();
+
+                user.last_login_at = new Date();
 
                 return done(null, user);
             })
@@ -38,24 +38,6 @@ module.exports = function(done) {
                 return done(reason);
             });
 
-    }));
-
-    passport.use(new JWTStrategy({
-        jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-        secretOrKey: process.env.JWT_KEY,
-        // audience: '',
-        ignoreExpiration: false
-    }, function(payload, done) {
-        console.log(payload);
-        var UserModel = require(BACKEND + '/models').user;
-        UserModel
-            .findById(payload.id)
-            .then(function(user) {
-                if (!user) { return done(null, false); }
-                return done(null, user);
-            }).catch(function(err) {
-                return done(null, err);
-            });
     }));
 
     passport.use(new LocalAPIKeyStrategy(function(apikey, done) {
@@ -73,7 +55,7 @@ module.exports = function(done) {
     passport.serializeUser(function(user, done) {
 
         done(null, {
-            'id': user.id,
+            '_id': user.employee_id,
             'permission_level_code': user.permission_level_code
         });
     });
@@ -83,12 +65,10 @@ module.exports = function(done) {
         // done(null, false);
 
         var id = user._id;
-        var UserModel = require(BACKEND + '/models').user;
+        var UserModel = require(BACKEND + '/models').employee;
 
         UserModel
-            .findOne({
-                where: { id: id }
-            })
+            .findById(id)
             .then(function(err) {
                 if (user) {
                     done(null, user);

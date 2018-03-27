@@ -203,7 +203,7 @@ controller.updateAddress = (req, res, next) => {
     var record = {},
     recordId;
 
-    record.address_line_1 = ;
+    // record.address_line_1 = ;
 
     AddressModel
         .update(record, {
@@ -237,7 +237,7 @@ controller.updatePhoneNumber = (req, res, next) => {
     var record = {},
     recordId;
 
-    record.phone_number = ;
+    // record.phone_number = ;
 
     PhoneModel
         .update(record, {
@@ -268,10 +268,11 @@ controller.updatePhoneNumber = (req, res, next) => {
 controller.removeAddress = (req, res, next) => {
 
     var user = req.user || {};
-    var record = {};
+    var record = {},
+    recordId;
 
     record.where = {
-        address_id: req.,
+        address_id: recordId,
         person_id: user.id
     }
 
@@ -293,10 +294,11 @@ controller.removeAddress = (req, res, next) => {
 controller.removePhoneNumber = (req, res, next) => {
 
     var user = req.user || {};
-    var record = {};
+    var record = {},
+    recordId;
 
     record.where = {
-        phone_number_id: req.,
+        phone_number_id: recordId,
         person_id: id
     }
 

@@ -110,19 +110,25 @@ module.exports = (sequelize, DataTypes) => {
         }
     });
 
-    Employee.prototype.isValidPassword = (password) => {
+    Employee.prototype.toJSON = function() {
+        var values = Object.assign({}, this.get());
+        delete values.password;
+        return values;
+    };
+
+    Employee.prototype.isValidPassword = function(password) {
         return bcrypt.compareSync(password, this.password);
     };
 
-    Employee.prototype.getFullName = () => {
+    Employee.prototype.getFullName = function() {
         return [this.firstName, this.lastName].join(' ');
     }
 
-    Employee.prototype.isManager = () => {
+    Employee.prototype.isManager = function() {
         return this.permission_level_code > 3;
     };
 
-    Employee.prototype.canDelete = () => {
+    Employee.prototype.canDelete = function() {
         return (_.includes([3, 4], this.permission_level_code));
     };
     

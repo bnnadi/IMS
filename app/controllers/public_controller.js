@@ -15,19 +15,19 @@ var db = require(BACKEND + '/models');
 
 var ApiKeyModel = db.api_key;
 
-controller.index = function(req, res) {
+controller.index = (req, res) => {
     res.sendFile('index.html', {
         root: ROOT + '/public/dist/'
     });
 };
 
-controller.authenticate = function(req, res, next) {
+controller.authenticate = (req, res, next) => {
 
     var api_key = req.query.key;
 
     ApiKeyModel
         .find({ where: { key: api_key } })
-        .then(function(key) {
+        .then((key) => {
             if (!key) {
                 console.log(nnLine, new Date());
                 res.status(400);
@@ -51,7 +51,7 @@ controller.authenticate = function(req, res, next) {
             });
             return;
         })
-        .catch(function(err) {
+        .catch((err) => {
             console.log(nnLine, new Date());
             res.status(400);
             res.json({
@@ -62,7 +62,7 @@ controller.authenticate = function(req, res, next) {
 
 };
 
-controller.login = function(req, res, next) {
+controller.login = (req, res, next) => {
 
     var username = req.body.username;
     var password = req.body.password;
@@ -91,7 +91,7 @@ controller.login = function(req, res, next) {
 
     }
 
-    passport.authenticate('v1-local-user', function(err, result, info) {
+    passport.authenticate('v1-local-user', (err, result, info) => {
 
         if (err) {
             errors = ['NNC-01001'];
@@ -117,7 +117,7 @@ controller.login = function(req, res, next) {
         }
         // req.logout();
 
-        req.logIn(result, function(err) {
+        req.logIn(result, (err) => {
 
             if (err) {
                 var errors = ['NNC-00002'];
@@ -133,18 +133,12 @@ controller.login = function(req, res, next) {
             var user = {
                 id: result.id,
                 permission_level_code: result.permission_level_code,
-                exp: Math.floor(Date.now() / 1000) + (60 * 60)
+                email: result.email,
+                name: result.getFullName(),
+                first_name: result.first_name,
+                last_name: result.last_name,
+                profile_img: '' // figure this nonesense out
             };
-
-            var token = jwt.sign(user, process.env.JWT_KEY);
-
-            delete user.exp;
-
-            user.token = token;
-            user.email = result.email;
-            user.name = result.getFullName();
-            user.profile_img = '';
-            user.access = (result.companyId = 0) ? 'full' : '';
 
             res.json({
                 result: user
@@ -157,7 +151,7 @@ controller.login = function(req, res, next) {
 
 };
 
-controller.logout = function(req, res, next) {
+controller.logout = (req, res, next) => {
 
     req.logout();
 
@@ -171,7 +165,7 @@ controller.logout = function(req, res, next) {
 
 controller.before([
     'login',
-], function(req, res, next) {
+], (req, res, next) => {
 
     if (req.isAuthenticated()) {
         res.status(200);
@@ -187,7 +181,7 @@ controller.before([
 
 controller.before([
     'index',
-], function(req, res, next) {
+], (req, res, next) => {
 
     if (req.isAuthenticated()) {
 

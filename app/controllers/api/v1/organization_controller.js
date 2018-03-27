@@ -36,7 +36,9 @@ controller.createOne = (req, res, next) => {
 controller.readOne = (req, res, next) => {
 
     var user = req.user || {};
-    var query = {};
+    var id, query = {};
+
+    id = req.query.id;
 
     var schema = jsSchema({
         '?id': /^[a-f\d]{24}$/i,
@@ -59,10 +61,25 @@ controller.readOne = (req, res, next) => {
         
     }
 
+    query.where = {
+        organization_id: id
+    };
+
     OrganizationModel
         .findOne(query)
-        .then(org => {})
-        .catch(err => {})
+        .then(org => {
+            res.json({
+                result: org.toJSON(),
+            });
+            return;
+        })
+        .catch(err => {
+            res.status(400);
+            res.json({
+                errors: err,
+            });
+            return;
+        })
 
 };
 
@@ -74,9 +91,9 @@ controller.readMany = (req, res, next) => {
 
     OrganizationModel
         .findAndCountAll()
-        .then((companies) => {
+        .then((organizations) => {
             res.json({
-                result: companies
+                result: organizations
             });
             return;
         }).catch((err) => {
@@ -159,8 +176,32 @@ controller.deleteOne = (req, res, next) => {
                 errors: errors,
             });
             return;
-        }
+        })
 
+};
+
+controller.readManyOragnizationUnit = (req, res, next) => {
+
+    var user = req.user || {};
+
+    console.log(req)
+
+    var populate = req.body.populate || '';
+
+    OrganizationUnitModel
+        .findAndCountAll()
+        .then((companies) => {
+            res.json({
+                result: companies
+            });
+            return;
+        }).catch((err) => {
+            res.status(404);
+            res.json({
+                errors: errors,
+            });
+            return;
+        });
 };
 
 controller.addOragnizationUnit = (req, res, next) => {
@@ -316,7 +357,7 @@ controller.removeOragnizationUnit = (req, res, next) => {
                 errors: errors,
             });
             return;
-        }
+        })
 
 };
 

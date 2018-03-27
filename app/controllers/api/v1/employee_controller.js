@@ -21,7 +21,7 @@ var PhoneModel = db.phone_number;
 var OrganizationModel = db.organization;
 var OrganizationUnitModel = db.organization_units;
 
-controller.create = (req, res, next) => {
+controller.createOne = (req, res, next) => {
     var user = req.user || {};
 
     var record = options = {};
@@ -100,6 +100,35 @@ controller.readOne = (req, res, next) => {
         });
 };
 
+controller.readMany = (req, res, next) => {
+    var user = req.user || {};
+
+    var orderBy = req.query.orderBy;
+    var limit = req.query.limit || 10;
+    var offset = req.query.offset || 0;
+
+    EmployeeModel
+        .findAndCountAll({
+            subQuery: false,
+            include: populate,
+            order: orderBy,
+            limit: limit,
+            offset: offset,
+        })
+        .then(sheets => {
+            res.json({
+                result: sheets
+            });
+            return;
+        })
+        .catch(err => {
+            res.status(500);
+            res.json({
+                errors: err
+            });
+            return;
+        })
+};
 controller.updateOne = (req, res, next) => {
 
     var user = req.user || {};
@@ -206,7 +235,7 @@ controller.updateAddress = (req, res, next) => {
     var record = {},
     recordId;
 
-    record.address_line_1 = ;
+    // record.address_line_1 = ;
 
     AddressModel
         .update(record, {
@@ -240,7 +269,7 @@ controller.updatePhoneNumber = (req, res, next) => {
     var record = {},
     recordId;
 
-    record.phone_number = ;
+    // record.phone_number = ;
 
     PhoneModel
         .update(record, {
@@ -271,10 +300,10 @@ controller.updatePhoneNumber = (req, res, next) => {
 controller.removeAddress = (req, res, next) => {
 
     var user = req.user || {};
-    var record = {};
+    var record = {}, recordId;
 
     record.where = {
-        address_id: req.,
+        address_id: recordId,
         person_id: user.id
     }
 
@@ -296,10 +325,10 @@ controller.removeAddress = (req, res, next) => {
 controller.removePhoneNumber = (req, res, next) => {
 
     var user = req.user || {};
-    var record = {};
+    var record = {}, recordId;
 
     record.where = {
-        phone_number_id: req.,
+        phone_number_id: recordId,
         person_id: id
     }
 
@@ -344,6 +373,8 @@ controller.deleteOne = (req, res, next) => {
             return;
         })
 };
+
+controller.generateQRCode = (req, res, next) => {}
 
 controller.before([
     '*'
