@@ -11,42 +11,24 @@ var Controller = require(ROOT + '/app/controllers/base_controller');
 var controller = new Controller();
 
 const db = require(BACKEND + '/models');
-const uuidV4 = /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i;
 
-var TimesheetModel = db.timesheet;
-var EmployeeAssignment = db.employee_assignment;
+var ApiKeyModel = db.api_key;
+var EmployeeModel = db.employee;
 
-controller.clockInOut = (req, res, next) => {
+controller.createOne = (req, res, next) => {
 
-    var email = req.body.email;
-    
-    // validate the parameters
-    var schema = jsSchema({
-        email: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-    });
-    
-    var invalid = schema.errors({
-        email: email
-    });
-    
-    if (invalid) {
-    
-        var errors = ['NNC-01001'];
-        // res.nnBunyan(errors);
-        console.log(nnLine, new Date());
-        res.status(400);
-        res.json({
-            errors: errors,
-        });
-        return;
-    
+    var ttl = req.body.ttl;
+
+    var record = {
+        ttl: ttl
     }
 
-    TimesheetModel
-        .findOrCreate({where: {email: email}})
-        .then(time => {
+    ApiKeyModel
+        .create(record)
+        .then(key => {
+            res.status(201);
             res.json({
-                result: time
+                result: key
             });
             return;
         })
@@ -63,11 +45,11 @@ controller.clockInOut = (req, res, next) => {
 controller.readOne = (req, res, next) => {
     var user = req.user || {};
 
-    var id = req.query.id || user._id;
+    var id = req.query.key_id;
 
     // validate the parameters
     var schema = jsSchema({
-        '?id': uuidV4,
+        '?id': /\+?\d+$/i,
     });
         
     var invalid = schema.errors({
@@ -81,24 +63,24 @@ controller.readOne = (req, res, next) => {
         console.log(nnLine, new Date());
         res.status(400);
         res.json({
-            errors: errors,
+            errors: invalid,
         });
         return;
         
     }
 
-    TimesheetModel
+    ApiKeyModel
         .findById(id)
-        .then(time => {
+        .then(key => {
             res.json({
-                result: time
+                result: key
             });
             return;
         })
         .catch(err => {
             res.status(500);
             res.json({
-                errors: err
+                errors: err.errors
             });
             return;
         })
@@ -106,22 +88,12 @@ controller.readOne = (req, res, next) => {
 
 controller.readMany = (req, res, next) => {
     var user = req.user || {};
-
     var populate = req.body.populate || [];
     var orderBy = req.query.orderBy;
     var limit = req.query.limit || 10;
     var offset = req.query.offset || 0;
-    var record = {};
 
-    // search for organization unit
-    if(req.query.u_id) {}
-
-    // search for employee
-    if(req.query.e_id) {}
-
-    record.timesheetForEmployee_id = user._id
-
-    TimesheetModel
+    ApiKeyModel
         .findAndCountAll({
             subQuery: false,
             include: populate,
@@ -129,9 +101,9 @@ controller.readMany = (req, res, next) => {
             limit: limit,
             offset: offset,
         })
-        .then(sheets => {
+        .then(keys => {
             res.json({
-                result: sheets
+                result: keys
             });
             return;
         })
@@ -144,15 +116,8 @@ controller.readMany = (req, res, next) => {
         })
 };
 
-controller.updateOne = (req, res, next) => {
-    var user = req.user || {};
-};
-
-controller.deleteOne = (req, res, next) => {
-    var user = req.user || {};
-};
-
 controller.before([
+    'createOne',
     'readOne',
     'readMany'
 ], function(req, res, next) {
@@ -163,24 +128,14 @@ controller.before([
             errors: 'UNAUTHORIZED'
         });
         return;
-    }
-
-    next();
-
-});
-
-controller.before([
-    'updateOne',
-    'deleteOne'
-], function(req, res, next) {
-
-    if (req.isAuthenticated() && !req.user.isManager) {
+    } else if(req.isAuthenticated() && !req.user.isManager) {
         res.status(403);
         res.json({
             errors: 'FORBIDDEN'
         });
         return;
     }
+
 
     next();
 

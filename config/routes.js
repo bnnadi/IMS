@@ -6,12 +6,13 @@ var passport = require('passport');
 
 var public = require(BACKEND + '/controllers/public_controller');
 
+var v1ApiKey = require(BACKEND + '/controllers/api/v1/api_key_controller');
 var v1Customer = require(BACKEND + '/controllers/api/v1/customer_controller');
 var v1Employee = require(BACKEND + '/controllers/api/v1/employee_controller');
-var v1Order = require(BACKEND + '/controllers/api/v1/order_controller');
 // var v1PasswordReset = require(BACKEND + '/controllers/api/v1/password_reset_controller');
 var v1Product = require(BACKEND + '/controllers/api/v1/product_controller');
 var v1Time = require(BACKEND + '/controllers/api/v1/timesheet_controller');
+var v1Order = require(BACKEND + '/controllers/api/v1/order_controller');
 var v1Organization = require(BACKEND + '/controllers/api/v1/organization_controller');
 var v1User = require(BACKEND + '/controllers/api/v1/user_controller');
 
@@ -20,7 +21,7 @@ module.exports = function routes() {
     // access
     this.get('/api/v1/authenticate', public.authenticate);
     this.post('/api/v1/login.json', public.login);
-    this.get('/api/v1/logout', passport.authenticate('jwt', { session: false }), public.logout);
+    this.get('/api/v1/logout', public.logout);
 
     // reset
     // this.post('/api/v1/passwordReset.json', v1PasswordReset.start);
@@ -30,13 +31,18 @@ module.exports = function routes() {
     // timesheet
     this.post('/api/v1/clockInOut', passport.authenticate('localapikey', { session: false }), v1Time.clockInOut);
 
+    // api_key
+    this.post('/api/v1/generateApiKey.json', v1ApiKey.createOne);
+    this.get('/api/v1/apiKey.json', v1ApiKey.readOne);
+    this.get('/api/v1/apiKeys.json', v1ApiKey.readMany);
+
     // customers
     this.post('/api/v1/customer.json', v1Customer.createOne);
     this.get('/api/v1/customer.json', v1Customer.readOne);
     this.get('/api/v1/customers.json', v1Customer.readMany);
     this.put('/api/v1/customer.json', v1Customer.updateOne);
-    this.post('/api/v1/customer/addAddress.json', v1Customer.addAddress);
-    this.post('/api/v1/customer/addPhoneNumber.json', v1Customer.addPhoneNumber);
+    this.post('/api/v1/customer/:id/addAddress.json', v1Customer.addAddress);
+    this.post('/api/v1/customer/:id/addPhoneNumber.json', v1Customer.addPhoneNumber);
     this.put('/api/v1/customer/updateAddress.json', v1Customer.updateAddress);
     this.put('/api/v1/customer/updatePhoneNumber.json', v1Customer.updatePhoneNumber);
     this.put('/api/v1/customer/removeAddress.json', v1Customer.removeAddress);
@@ -49,8 +55,8 @@ module.exports = function routes() {
     this.get('/api/v1/employees.json', v1Employee.readMany);
     this.put('/api/v1/employee.json', v1Employee.updateOne);
     this.delete('/api/v1/employee/:id.json', v1Employee.deleteOne);
-    this.post('/api/v1/employee/addAddress.json', v1Employee.addAddress);
-    this.post('/api/v1/employee/addPhoneNumber.json', v1Employee.addPhoneNumber);
+    this.post('/api/v1/employee/:id/addAddress.json', v1Employee.addAddress);
+    this.post('/api/v1/employee/:id/addPhoneNumber.json', v1Employee.addPhoneNumber);
     this.put('/api/v1/employee/:id/updateAddress.json', v1Employee.updateAddress);
     this.put('/api/v1/employee/:id/updatePhoneNumber.json', v1Employee.updatePhoneNumber);
     this.put('/api/v1/employee/:id/removeAddress.json', v1Employee.removeAddress);
@@ -69,11 +75,12 @@ module.exports = function routes() {
     this.post('/api/v1/organization.json', v1Organization.createOne);
     this.get('/api/v1/organization.json', v1Organization.readOne);
     this.get('/api/v1/organizations.json', v1Organization.readMany);
-    this.put('/api/v1/organizations.json', v1Organization.updateOne);
-    this.post('/api/v1/organization/units.json', v1Organization.readManyOragnizationUnit);
-    this.post('/api/v1/organization/addUnit.json', v1Organization.addOragnizationUnit);
-    this.put('/api/v1/organization/updateUnit.json', v1Organization.updateOragnizationUnit);
-    this.delete('/api/v1/organization/removeUnit.json', v1Organization.removeOragnizationUnit);
+    this.put('/api/v1/organization.json', v1Organization.updateOne);
+    this.get('/api/v1/organization/:id/units.json', v1Organization.readManyOragnizationUnit);
+    this.post('/api/v1/organization/:id/addUnit.json', v1Organization.addOragnizationUnit);
+    this.get('/api/v1/organization/:id/unit.json', v1Organization.readOragnizationUnit);
+    this.put('/api/v1/organization/:id/updateUnit.json', v1Organization.updateOragnizationUnit);
+    this.put('/api/v1/organization/:id/removeUnit.json', v1Organization.removeOragnizationUnit);
 
     // products
     this.post('/api/v1/product.json', v1Product.createOne);
@@ -84,8 +91,10 @@ module.exports = function routes() {
     this.delete('/api/v1/product/:id.json', v1Product.deleteOne);
 
     // timesheet
-    this.get('/api/v1/timesheet', v1Time.readOne);
-    this.get('/api/v1/timesheets', v1Time.readMany);
+    this.get('/api/v1/timesheet.json', v1Time.readOne);
+    this.get('/api/v1/timesheets.json', v1Time.readMany);
+    this.put('/api/v1/timesheet.json', v1Time.updateOne);
+    this.delete('/api/v1/timesheets/:id.json', v1Time.deleteOne);
 
     // user
     this.get('/api/v1/user/authenticate', v1User.authenticate);

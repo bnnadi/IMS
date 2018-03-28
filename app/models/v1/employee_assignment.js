@@ -45,7 +45,7 @@ module.exports = (sequelize, DataTypes) => {
         EmployeeAssignment.hasOne(models.organization_unit, {as: 'unitName', foreignKey: 'organizationUnit_id' })
         EmployeeAssignment.belongsTo(models.employee, { foreignKey: 'employee_id' })
         EmployeeAssignment.belongsTo(models.employee, {as: 'supervisor', foreignKey: 'reportsTo_id', allowNull: true, defaultValue: null })
-        // EmployeeAssignment.hasOne(models.role, {as: 'role', foreignKey: 'role_code', onDelete: 'NO ACTION', onUpdate: 'NO ACTION'})
+        // EmployeeAssignment.hasOne(models.role, {as: 'role', foreignKey: 'role_code', onDelete: 'NO ACTION', onUpdate: 'NO ACTION', constraints: false })
     };
 
     EmployeeAssignment.removeAttribute('id')

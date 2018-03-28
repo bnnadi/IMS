@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         organization_name: DataTypes.STRING,
         address: DataTypes.TEXT,
-        otherDetails: DataTypes.TEXT
+        other_details: DataTypes.TEXT
     }, {
         tableName: 'organizations',
         timestamps: true,
@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Organization.associate = (models) => {
-        Organization.hasMany(models.organization_unit, {foreignKey: 'organization_id'});
+        Organization.hasMany(models.organization_unit, {as: 'unit', foreignKey: 'organization_id'});
         Organization.hasMany(models.product, { as: 'product', foreignKey: 'organization_id'});
     };
     

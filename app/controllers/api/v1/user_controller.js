@@ -21,7 +21,7 @@ var OrganizationUnitModel = db.organization_units;
 controller.authenticate = (req, res, next) => {
 
     UserModel
-        .findById(req.user.id)
+        .findById(req.user._id)
         .then((result) => {
             var user = {
                 id: result.id,
@@ -59,7 +59,7 @@ controller.readOne = (req, res, next) => {
 
     var user = req.user || {};
 
-    var id = req.query.id || user.id;
+    var id = req.query.id || user._id;
 
     // validate the parameters
     var schema = jsSchema({
@@ -108,7 +108,7 @@ controller.updateOne = (req, res, next) => {
     });
 
     var invalid = schema.errors({
-        id: user.id
+        id: user._id
     });
 
     if (invalid) {
@@ -128,7 +128,7 @@ controller.updateOne = (req, res, next) => {
 
     UserModel(record,{
             where: {
-                employee_id: user.id
+                employee_id: user._id
             },
             returning: true,
             paranoid: true,
@@ -179,7 +179,7 @@ controller.addPhoneNumber = (req, res, next) => {
 
     var record = {};
 
-    record.person_id = user.id;
+    record.person_id = user._id;
 
     PhoneModel
         .findOrCreate(record,{
@@ -209,7 +209,7 @@ controller.updateAddress = (req, res, next) => {
         .update(record, {
             where: {
                 address_id: recordId,
-                person_id: user.id
+                person_id: user._id
             },
             returning: true,
             paranoid: true,
@@ -243,7 +243,7 @@ controller.updatePhoneNumber = (req, res, next) => {
         .update(record, {
             where: {
                 phone_number_id: recordId,
-                person_id: user.id
+                person_id: user._id
             },
             returning: true,
             paranoid: true,
@@ -273,7 +273,7 @@ controller.removeAddress = (req, res, next) => {
 
     record.where = {
         address_id: recordId,
-        person_id: user.id
+        person_id: user._id
     }
 
     AddressModel

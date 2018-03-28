@@ -46,7 +46,6 @@ module.exports = (sequelize, DataTypes) => {
             values: ['male', 'female', 'other']
           },
         dob: { type: DataTypes.DATE },
-        profile_img: { type: DataTypes.STRING },
         last_login_at: {
             type: DataTypes.DATE,
             defaultValue: null
@@ -98,6 +97,8 @@ module.exports = (sequelize, DataTypes) => {
         Employee.hasMany(models.phone_number, {as: 'phone', foreignKey: 'person_id', onDelete: 'CASCADE', });
         Employee.hasMany(models.internal_message_assignment, { as: 'sentMessages', foreignKey: 'msg_from_person_id' });
         Employee.hasMany(models.internal_message_assignment, { as: 'receivedMessages', foreignKey: 'msg_to_person_id' });
+        Employee.hasMany(models.image, { foreignKey: 'imageFor_id' })
+        Employee.belongsTo(models.image, { as: 'ProfilePicture', foreignKey: 'profilePic_id', constraints: false })
     };
 
     Employee.beforeValidate((employee, options) => {

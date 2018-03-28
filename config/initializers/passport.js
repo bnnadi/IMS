@@ -24,8 +24,6 @@ module.exports = function(done) {
             })
             .then(function(user) {
 
-                console.log(user)
-
                 if (!user) { return done(null, false); }
                 if (!user.isValidPassword(password)) { return done(null, false); }
 
@@ -56,7 +54,9 @@ module.exports = function(done) {
 
         done(null, {
             '_id': user.employee_id,
-            'permission_level_code': user.permission_level_code
+            'permission_level_code': user.permission_level_code,
+            'canDelete': user.canDelete(),
+            'isManager': user.isManager() 
         });
     });
 

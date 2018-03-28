@@ -1,29 +1,31 @@
+/*jslint node: true */
 ROOT = __dirname + '/../../..';
 
+var assert = require('assert');
 var async = require('async');
 var dotenv = require('dotenv').config();
 var expect = require('expect.js');
+var path = require('path');
 var request = require('superagent');
 
-var Sequelize = require("sequelize");
+var Sequelize = require('sequelize');
 
-var DummyUser = require(ROOT + '/test/data/user');
+var DummyOrder = require(path.join(ROOT + '/test/data/order'));
+var DummyUser = require(path.join(ROOT + '/test/data/user'));
 
+var dummyOrder = new DummyOrder();
+var dummyOrganizationUnit = new DummyOrganizationUnit();
 var dummyUserAdmin = new DummyUser();
+var dummyOrders = [];
+var dummyOrganizationUnits = [];
 
-var config = {
-    "database_name": process.env.DB_NAME,
-    "username": process.env.DB_USERNAME,
-    "password": process.env.DB_PASSWORD,
-    "dialect": process.env.DB_DIALECT,
-    "port": process.env.DB_PORT
-};
+var config = require(path.join(ROOT + '/test/config'));
 
 var sequelize = new Sequelize(config.database_name, config.username, config.password, config);
 
-var db = require(ROOT + '/app/models/index');
+var db = require(path.join(ROOT + '/app/models/index'));
 
-describe('Order V1 API', function() {
+describe('Order V1 API',() => {
 
     var adminToken;
 

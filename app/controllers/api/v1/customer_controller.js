@@ -45,7 +45,7 @@ controller.readOne = (req, res, next) => {
 
     var user = req.user || {};
 
-    var id = req.query.id || user.id;
+    var id = req.query.id || user._id;
 
     // validate the parameters
     var schema = jsSchema({
@@ -86,7 +86,7 @@ controller.readOne = (req, res, next) => {
 
 controller.readMany = (req, res, next) => {
     var user = req.user || {};
-
+    var populate = req.body.populate || [];
     var orderBy = req.query.orderBy;
     var limit = req.query.limit || 10;
     var offset = req.query.offset || 0;
@@ -124,7 +124,7 @@ controller.updateOne = (req, res, next) => {
     });
 
     var invalid = schema.errors({
-        id: user.id
+        id: user._id
     });
 
     if (invalid) {
@@ -145,7 +145,7 @@ controller.updateOne = (req, res, next) => {
     CustomerModel
         .create(record,{
             where: {
-                employee_id: user.id
+                employee_id: user._id
             },
             returning: true,
             paranoid: true,

@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     InvoiceLineItem.removeAttribute('id')
 
     InvoiceLineItem.associate = (models) => {
-        // InvoiceLineItem.hasOne(models.order_item, { foreignKey: 'order_item_id' });
+        // InvoiceLineItem.hasOne(models.order_item, { foreignKey: 'order_item_id', constraints: false  });
         InvoiceLineItem.belongsTo(models.invoice, { foreignKey: 'invoice_id' })
     };
     

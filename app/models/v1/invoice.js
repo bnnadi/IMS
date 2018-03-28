@@ -25,9 +25,9 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Invoice.associate = (models) => {
-        // Invoice.hasOne(models.order, { foreignKey: 'order_id'})
+        // Invoice.hasOne(models.order, { foreignKey: 'order_id', constraints: false })
         Invoice.hasMany(models.invoice_line_item, { as: 'lineItem', foreignKey:'invoice_id', onDelete: 'CASCADE' })
-        // Invoice.belongsTo(models.financial_transaction, { foreignKey: 'invoice_id' })
+        // Invoice.belongsTo(models.financial_transaction, { foreignKey: 'invoice_id', constraints: false  })
     };
     
     return Invoice;

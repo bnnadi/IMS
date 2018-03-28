@@ -19,7 +19,7 @@ controller.readOne = (req, res, next) => {};
 
 controller.readMany = (req, res, next) => {
     var user = req.user || {};
-
+    var populate = req.body.populate || [];
     var orderBy = req.query.orderBy;
     var limit = req.query.limit || 10;
     var offset = req.query.offset || 0;
@@ -54,7 +54,7 @@ controller.updateOne = (req, res, next) => {
         });
     
         var invalid = schema.errors({
-            id: user.id
+            id: user._id
         });
     
         if (invalid) {
@@ -86,7 +86,7 @@ controller.download = (req, res, next) => {
     });
     
     var invalid = schema.errors({
-        id: user.id
+        id: user._id
     });
     
     if (invalid) {
