@@ -268,6 +268,7 @@ gulp.task('v1-create-transaction-types', () => {
 
 gulp.task('v1-create-admin', () => {
     var Employee = db.employee;
+    var Assignment = db.employee_assignment;
     var Address = db.address;
     var Phone = db.phone_number;
 
@@ -292,6 +293,7 @@ gulp.task('v1-create-admin', () => {
 
 gulp.task('v1-create-guard', () => {
     var Employee = db.employee;
+    var Assignment = db.employee_assignment;
     var Address = db.address;
     var Phone = db.phone_number;
 
@@ -344,6 +346,7 @@ gulp.task('v1-create-guard', () => {
 
 gulp.task('v1-create-factory', () => {
     var Employee = db.employee;
+    var Assignment = db.employee_assignment;
     var Address = db.address;
     var Phone = db.phone_number;
 
@@ -394,6 +397,7 @@ gulp.task('v1-create-factory', () => {
 
 gulp.task('v1-create-agent', () => {
     var Employee = db.employee;
+    var Assignment = db.employee_assignment;
     var Address = db.address;
     var Phone = db.phone_number;
 

@@ -24,13 +24,15 @@ controller.index = (req, res) => {
 controller.authenticate = (req, res, next) => {
 
     var api_key = req.query.key;
+    console.log(req.query)
 
     ApiKeyModel
-        .find({ where: { key: api_key } })
+        .findOne({ where: { key: api_key } })
         .then((key) => {
+            console.log(key)
             if (!key) {
                 console.log(nnLine, new Date());
-                res.status(400);
+                res.status(401);
                 res.json({
                     errors: 'Unauthorized',
                 });
@@ -39,9 +41,9 @@ controller.authenticate = (req, res, next) => {
 
             if (key.isExpired()) {
                 console.log(nnLine, new Date());
-                res.status(400);
+                res.status(401);
                 res.json({
-                    errors: 'Unauthorized',
+                    errors: 'Unauthorized. Your key has expired please get a new key.',
                 });
                 return;
             }
@@ -55,7 +57,7 @@ controller.authenticate = (req, res, next) => {
             console.log(nnLine, new Date());
             res.status(400);
             res.json({
-                errors: invalid,
+                errors: err.errors,
             });
             return;
         });
@@ -134,7 +136,6 @@ controller.login = (req, res, next) => {
                 id: result.id,
                 permission_level_code: result.permission_level_code,
                 email: result.email,
-                name: result.getFullName(),
                 first_name: result.first_name,
                 last_name: result.last_name,
                 profile_img: '' // figure this nonesense out

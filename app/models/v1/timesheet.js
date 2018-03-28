@@ -25,8 +25,18 @@ module.exports = (sequelize, DataTypes) => {
                 isUUID: 4,
             },
         },
-        start_date: DataTypes.DATE,
-        end_date: DataTypes.DATE,
+        start_date: { 
+            type: DataTypes.DATE,
+            validate: {
+                isDate: true,
+            },
+        },
+        end_date: { 
+            type: DataTypes.DATE,
+            validate: {
+                isDate: true,
+            },
+        },
         other_details: DataTypes.TEXT
     }, {
         tableName: 'timesheets',

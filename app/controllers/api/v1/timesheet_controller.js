@@ -14,11 +14,13 @@ const db = require(BACKEND + '/models');
 const uuidV4 = /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i;
 
 var TimesheetModel = db.timesheet;
+var Employee = db.employee;
 var EmployeeAssignment = db.employee_assignment;
 
 controller.clockInOut = (req, res, next) => {
 
     var email = req.body.email;
+    var record = {};
     
     // validate the parameters
     var schema = jsSchema({
@@ -36,27 +38,77 @@ controller.clockInOut = (req, res, next) => {
         console.log(nnLine, new Date());
         res.status(400);
         res.json({
-            errors: errors,
+            errors: 'Invalid email',
         });
         return;
     
     }
 
-    TimesheetModel
-        .findOrCreate({where: {email: email}})
-        .then(time => {
-            res.json({
-                result: time
-            });
-            return;
-        })
-        .catch(err => {
-            res.status(500);
-            res.json({
-                errors: err
-            });
-            return;
-        })
+    async.series([
+        (cb) => {
+            Employee
+                .findOne({
+                    where: {email: email},  
+                    attributes: ['employee_id']
+                })
+                .then((employee, err) => {
+                    if(err) {
+                        res.status(500);
+                        res.json({
+                            errors: err.errors
+                        });
+                        return;
+                    }
+
+                    if(!employee) {
+                        res.status(404);
+                        res.json({
+                            errors: 'Employee not found'
+                        });
+                        return;
+                    }
+                    record.timesheetForEmployee_id = employee.employee_id;
+                    cb({id: employee.employee_id})
+                })
+
+        }
+    ], (result) => {
+        console.log(result);
+        TimesheetModel
+            .findOne({
+                where: {timesheetForEmployee_id: result.id}, 
+                order: [ [ 'created_at', 'DESC' ]],
+                include: [{
+                    model: EmployeeAssignment,
+                    where: { employee_id: result.id }
+                }]
+            })
+            .then(time => {
+                console.log(time)
+                const date = new Date();
+                if(time) {
+                    record.end_date = date;
+                    return time.update(record)
+                } else {
+                    record.start_date = date;
+                    return TimesheetModel.create(record)
+                }
+            })
+            .then(time => {
+                console.log(time)
+                res.json({
+                    result: 'success'
+                });
+                return;
+            })
+            .catch(err => {
+                res.status(500);
+                res.json({
+                    errors: err
+                });
+                return;
+            })
+    })
 
 };
 
@@ -122,7 +174,7 @@ controller.readMany = (req, res, next) => {
     record.timesheetForEmployee_id = user._id
 
     TimesheetModel
-        .findAndCountAll({
+        .findAndCountAll({where: record}, {
             subQuery: false,
             include: populate,
             order: orderBy,

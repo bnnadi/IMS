@@ -5,6 +5,7 @@ var path = require('path');
 var passport = require('passport');
 
 var public = require(BACKEND + '/controllers/public_controller');
+var middleware = require(CONFIG + '/middleware/route');
 
 var v1ApiKey = require(BACKEND + '/controllers/api/v1/api_key_controller');
 var v1Customer = require(BACKEND + '/controllers/api/v1/customer_controller');
@@ -19,7 +20,6 @@ var v1User = require(BACKEND + '/controllers/api/v1/user_controller');
 module.exports = function routes() {
 
     // access
-    this.get('/api/v1/authenticate', public.authenticate);
     this.post('/api/v1/login.json', public.login);
     this.get('/api/v1/logout', public.logout);
 
@@ -27,9 +27,10 @@ module.exports = function routes() {
     // this.post('/api/v1/passwordReset.json', v1PasswordReset.start);
     // this.put('/api/v1/passwordVerify.json', v1PasswordReset.verify);
 
-    //TODO: look into the api key authenticate
+    // authenticate
+    this.get('/api/v1/authenticate', middleware.apiKey, public.authenticate);
     // timesheet
-    this.post('/api/v1/clockInOut', passport.authenticate('localapikey', { session: false }), v1Time.clockInOut);
+    this.post('/api/v1/clockInOut', middleware.apiKey, v1Time.clockInOut);
 
     // api_key
     this.post('/api/v1/generateApiKey.json', v1ApiKey.createOne);

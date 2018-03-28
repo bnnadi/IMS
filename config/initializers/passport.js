@@ -39,6 +39,7 @@ module.exports = function(done) {
     }));
 
     passport.use(new LocalAPIKeyStrategy(function(apikey, done) {
+        console.log(nnLine, apikey);
         var ApiKeyModel = require(BACKEND + '/models').api_key;
         ApiKeyModel
             .find({ where: { key: apikey } }, function(err, key) {

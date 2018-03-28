@@ -18,7 +18,10 @@ module.exports = (sequelize, DataTypes) => {
         },
         date_from: {
             type: DataTypes.DATE,
-            primaryKey: true
+            primaryKey: true,
+            validate: {
+                isDate: true,
+            },
         },
         reportsTo_id: {
             type: DataTypes.UUID, // foreign key
@@ -30,6 +33,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         role_code: { 
             type: DataTypes.INTEGER, // foreign key
+            allowNull: true,
             validate: {
                 isInt: true,
             }
