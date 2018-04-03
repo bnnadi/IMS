@@ -7,7 +7,9 @@ var request = require('superagent');
 
 var Sequelize = require("sequelize");
 
-var DummyUser = require(ROOT + '/test/data/user');
+var DummyUser = require(path.join(ROOT + '/test/data/user'));
+var DummyEmployee = require(path.join(ROOT + '/test/data/employee'));
+var DummyEmployeeAssignment = require(path.join(ROOT + '/test/data/employee_assignment'));
 
 var dummyUserAdmin = new DummyUser();
 
@@ -23,17 +25,19 @@ var sequelize = new Sequelize(config.database_name, config.username, config.pass
 
 var db = require(ROOT + '/app/models/index');
 
-describe('Product V1 API', function() {
+describe('Employee V1 API', function() {
 
     var adminToken;
 
     before(function(done) {
 
-        var UserModel = db.user;
+        var UserModel = db.employee;
 
         UserModel
             .create(dummyUserAdmin)
-            .then()
+            .then(user => {
+                dummyUserAdmin = result;
+            })
             .catch();
 
     });
@@ -49,6 +53,20 @@ describe('Product V1 API', function() {
 
                 adminToken = res.body.result.token;
 
+                done();
+            });
+    });
+
+    it('Admin creates Sales Manager', (done) => {
+        request
+            .post(process.env.APP_URL +'/api/v1/clockInOut')
+            .set('x-api-key', dummyApiKey.key)
+            .set('Content-Type', 'application/json')
+            .send({ email: 'admin@example.com' })
+            .end((err, res) => {
+                expect(res.status).to.be(200);
+                var response = res.body,
+                result = response.result;
                 done();
             });
     });

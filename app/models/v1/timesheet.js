@@ -7,24 +7,6 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             defaultValue: DataTypes.UUIDV4
         },
-        organizationUnit_id: {
-            type: DataTypes.UUID, // foreign key
-            validate: {
-                isUUID: 4,
-            },
-        },
-        authorizedByEmployee_id: {
-            type: DataTypes.UUID, // foreign key
-            validate: {
-                isUUID: 4,
-            },
-        },
-        timesheetForEmployee_id: {
-            type: DataTypes.UUID, // foreign key
-            validate: {
-                isUUID: 4,
-            },
-        },
         start_date: { 
             type: DataTypes.DATE,
             validate: {
@@ -46,9 +28,9 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Timesheet.associate = (models) => {
-        Timesheet.belongsTo(models.employee, { as: 'authorizedBy', foreignKey: 'employee_id'})
-        Timesheet.belongsTo(models.employee, {foreignKey: 'employee_id'})
-        Timesheet.belongsTo(models.organization_unit, {foreignKey: 'organization_unit_id'})
+        Timesheet.belongsTo(models.employee, { as: 'authorizedByEmployee_id', foreignKey: 'employee_id'})
+        Timesheet.belongsTo(models.employee, {as: 'timesheetForEmployee_id', foreignKey: 'employee_id'})
+        Timesheet.belongsTo(models.organization_unit, {as: 'organizationUnit_id', foreignKey: 'organization_unit_id'})
     };
     
     return Timesheet;

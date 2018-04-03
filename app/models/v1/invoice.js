@@ -10,13 +10,12 @@ module.exports = (sequelize, DataTypes) => {
         invoice_number:{
             type: DataTypes.STRING
         },
-        order_id: {
-            type: DataTypes.UUID, // foreign key
-            validate: {
-                isUUID: 4,
-            },
-            
-        },
+        // order_id: {
+        //     type: DataTypes.UUID, // foreign key
+        //     validate: {
+        //         isUUID: 4,
+        //     },
+        // },
     }, {
         tableName: 'invoices',
         timestamps: true,
@@ -25,9 +24,8 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Invoice.associate = (models) => {
-        // Invoice.hasOne(models.order, { foreignKey: 'order_id', constraints: false })
+        Invoice.hasOne(models.order)
         Invoice.hasMany(models.invoice_line_item, { as: 'lineItem', foreignKey:'invoice_id', onDelete: 'CASCADE' })
-        // Invoice.belongsTo(models.financial_transaction, { foreignKey: 'invoice_id', constraints: false  })
     };
     
     return Invoice;

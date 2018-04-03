@@ -4,6 +4,7 @@ var async = require('async');
 var fs = require('fs');
 var jsSchema = require('js-schema');
 var generatePsswrd = require('password-generator');
+var vCard = require('vcf')
 
 var Mailer = require(ROOT + '/app/helpers/mailer');
 
@@ -14,9 +15,11 @@ var Controller = require(ROOT + '/app/controllers/base_controller');
 var controller = new Controller();
 
 const db = require(BACKEND + '/models');
+const uuidV4 = /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i;
 
-var EmployeeModel = db.employee;
 var AddressModel = db.address;
+var AssignmentModel = db.employee_assignment;
+var EmployeeModel = db.employee;
 var PhoneModel = db.phone_number;
 var OrganizationModel = db.organization;
 var OrganizationUnitModel = db.organization_units;
@@ -24,7 +27,7 @@ var OrganizationUnitModel = db.organization_units;
 controller.createOne = (req, res, next) => {
     var user = req.user || {};
 
-    var record = options = {};
+    var record = options = address = phone ={};
 
     record.email = req.body.email;
     record.first_name = req.body.first_name;
@@ -33,6 +36,14 @@ controller.createOne = (req, res, next) => {
     record.dob = req.body.dob;
     record.other_details = req.body.other_details;
     record.password = generatePsswrd();
+
+    if (req.body.address) {
+        address = req.body.address
+    }
+
+    if (req.body.phone) {
+        phone.phone_number = req.body.phone;
+    }
 
     EmployeeModel
         .findOrCreate({
@@ -43,17 +54,59 @@ controller.createOne = (req, res, next) => {
         })
         .spread((employee, created) => {
             console.log(employee);
-            var mailerOptions = {
-                from: 'hr@denadis.com',
-                to: employee.email,
-                subject: 'Welcome to the Family', 
-                html: '<h1>Welcome to the team</h1><p>Here is yoour temporay password.</p>'
-            }
-            Mailer.send()
-            res.status(201)
-            res.json({
-                result: employee.get({plain: true})
-            })
+
+            async.parallel({
+                assign: function(callback) {
+                    Assignment
+                        .create()
+                        .then(assign => {
+                            employee.setAssignment(assign.date_from)
+                        })
+                        .catch(err => {
+                            cb(err.errors)
+                        })
+                },
+                address: function(callback) {
+                    Address
+                        .create(address)
+                        .then(address => {
+                            employee.setAddress(address.address_id);
+                        })
+                        .catch(err => {
+                            cb(err.errors)
+                        })
+                },
+                phone: function(callback) {     
+                    Phone
+                        .create({
+                            phone_number: chance.phone({ formatted: false })
+                        })
+                        .then(phone => {
+                            employee.setPhone( phone.phone_number_id);
+                        })
+                }
+            }, function(err, results) {
+                // results is now equals to: {one: 1, two: 2}
+                console.log(results);
+
+                if(err) {
+
+                }
+
+                var mailerOptions = {
+                    from: 'hr@denadis.com',
+                    to: employee.email,
+                    subject: 'Welcome to the Family', 
+                    html: '<h1>Welcome to the team</h1><p>Here is yoour temporay password.</p>'
+                }
+
+                Mailer.send();
+
+                res.status(201)
+                res.json({
+                    result: employee.get({plain: true})
+                })
+            });
         });
 };
 
@@ -61,11 +114,11 @@ controller.readOne = (req, res, next) => {
 
     var user = req.user || {};
 
-    var id = req.query.id || user._id;
+    var id = req.query.id;
 
     // validate the parameters
     var schema = jsSchema({
-        id: /^[a-f\d]{24}$/i,
+        id: uuidV4,
     });
 
     var invalid = schema.errors({
@@ -129,9 +182,11 @@ controller.readMany = (req, res, next) => {
             return;
         })
 };
+
 controller.updateOne = (req, res, next) => {
 
     var user = req.user || {};
+    var id = req.query.id
 
     // validate the parameters
     var schema = jsSchema({
@@ -139,7 +194,7 @@ controller.updateOne = (req, res, next) => {
     });
 
     var invalid = schema.errors({
-        id: user._id
+        id: id
     });
 
     if (invalid) {
@@ -160,7 +215,7 @@ controller.updateOne = (req, res, next) => {
     EmployeeModel
         .update(record,{
             where: {
-                employee_id: user._id
+                employee_id: id
             },
             returning: true,
             paranoid: true,
@@ -180,6 +235,10 @@ controller.updateOne = (req, res, next) => {
             });
             return;
         });
+};
+
+controller.assignnment = (req, res, next) => {
+    
 };
 
 controller.addAddress = (req, res, next) => {
@@ -374,7 +433,47 @@ controller.deleteOne = (req, res, next) => {
         })
 };
 
-controller.generateQRCode = (req, res, next) => {}
+controller.generateQRCode = (req, res, next) => {
+    var user = req.user || {};
+
+    var id = req.query.id;
+
+    // validate the parameters
+    var schema = jsSchema({
+        id: uuidV4,
+    });
+
+    var invalid = schema.errors({
+        id: id
+    });
+
+    if (invalid) {
+        
+        // res.nnBunyan(errors);
+        console.log(nnLine, new Date());
+        res.status(400);
+        res.json({
+            errors: invalid,
+        });
+        return;
+
+    }
+
+    EmployeeModel
+        .findById(id)
+        .then((user) => {
+            res.json({
+                result: user.toJSON()
+            });
+            return;
+        }).catch((err) => {
+            res.status(404);
+            res.json({
+                errors: err,
+            });
+            return;
+        });
+}
 
 controller.before([
     '*'

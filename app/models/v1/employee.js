@@ -52,7 +52,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         start_date: { 
             type: DataTypes.DATE,
-            defaultValue:  new Date() 
+            defaultValue: DataTypes.NOW 
         },
         end_date: {
             type: DataTypes.DATE,
@@ -90,11 +90,12 @@ module.exports = (sequelize, DataTypes) => {
 
     Employee.associate = (models) => {
         Employee.hasMany(models.timesheet, { as: 'authorizedTimesheets', foreignKey: 'authorizedBythis_id'});
-        Employee.hasMany(models.timesheet, { as: 'timesheets', foreignKey: 'timesheetForthis_id', onDelete: 'CASCADE',});
-        Employee.hasMany(models.address, { as: 'address', foreignKey: 'person_id', onDelete: 'CASCADE', });
-        Employee.hasMany(models.employee_assignment, { foreignKey: 'employee_id', onDelete: 'CASCADE', });
+        Employee.hasMany(models.timesheet, { as: 'timesheets', foreignKey: 'timesheetForthis_id', onDelete: 'CASCADE'});
+        Employee.hasMany(models.address, { as: 'address', foreignKey: 'employee_id', onDelete: 'CASCADE', constraints: false});
+        Employee.hasMany(models.phone_number, { as: 'phone', foreignKey: 'employee_id', onDelete: 'CASCADE', constraints: false});
+        Employee.hasOne(models.employee_assignment, {as: 'assignment', foreignKey: 'employee_id', onDelete: 'CASCADE'});
+        Employee.hasOne(models.employee_idCard, {as: 'idCard', foreignKey: 'employee_id', onDelete: 'CASCADE'});
         Employee.hasMany(models.employee_assignment, { foreignKey: 'reportsTo_id', onDelete: 'SET NULL', allowNull: true, defaultValue: null });
-        Employee.hasMany(models.phone_number, {as: 'phone', foreignKey: 'person_id', onDelete: 'CASCADE', });
         Employee.hasMany(models.internal_message_assignment, { as: 'sentMessages', foreignKey: 'msg_from_person_id' });
         Employee.hasMany(models.internal_message_assignment, { as: 'receivedMessages', foreignKey: 'msg_to_person_id' });
         Employee.hasMany(models.image, { foreignKey: 'imageFor_id' })
@@ -109,6 +110,7 @@ module.exports = (sequelize, DataTypes) => {
         if (!employee.permission_level_code) {
             employee.permission_level_code = 1;
         }
+
     });
 
     Employee.prototype.toJSON = function() {

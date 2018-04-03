@@ -11,6 +11,7 @@ var Controller = require(ROOT + '/app/controllers/base_controller');
 var controller = new Controller();
 
 const db = require(BACKEND + '/models');
+const uuidV4 = /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i;
 
 var UserModel = db.employee;
 var AddressModel = db.address;
@@ -63,7 +64,7 @@ controller.readOne = (req, res, next) => {
 
     // validate the parameters
     var schema = jsSchema({
-        id: /^[a-f\d]{24}$/i,
+        id: uuidV4,
     });
 
     var invalid = schema.errors({
@@ -104,7 +105,7 @@ controller.updateOne = (req, res, next) => {
 
     // validate the parameters
     var schema = jsSchema({
-        id: Number,
+        id: uuidV4,
     });
 
     var invalid = schema.errors({

@@ -7,30 +7,6 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             defaultValue: DataTypes.UUIDV4
         },
-        customer_id: {
-            type: DataTypes.UUID, // foreign key
-            validate: {
-                isUUID: 4,
-            },
-        },
-        invoice_id: {
-            type: DataTypes.INTEGER, // foreign key
-            validate: {
-                isInt: true,
-            },
-        },
-        payment_id: {
-            type: DataTypes.UUID, // foreign key
-            validate: {
-                isUUID: 4,
-            },
-        },
-        transaction_type_id: { 
-            type:DataTypes.INTEGER, // foreign key
-            validate: {
-                isInt: true,
-            },
-        },
         transaction_date: DataTypes.DATE,
         transaction_comment:DataTypes.TEXT,
         other_transaction_details: DataTypes.TEXT
@@ -42,10 +18,10 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     FinancialTransaction.associate = (models) => {
-        FinancialTransaction.belongsTo(models.customer, { foreignKey: 'customer_id' })
-        // // FinancialTransaction.hasOne(models.payment, { foreignKey: 'payment_id' })
-        // FinancialTransaction.hasOne(models.invoice, { foreignKey: 'invoice_id' })
-        // FinancialTransaction.hasOne(models.transaction_type, { foreignKey: 'transaction_type_id' })
+        FinancialTransaction.belongsTo(models.customer,  { foreignKey: 'customer_id' })
+        FinancialTransaction.hasOne(models.payment)
+        FinancialTransaction.hasOne(models.invoice)
+        FinancialTransaction.hasOne(models.transaction_type)
     };
     
     return FinancialTransaction;

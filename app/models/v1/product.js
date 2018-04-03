@@ -7,22 +7,6 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             defaultValue: DataTypes.UUIDV4
         },
-        parent_product_id: { 
-            type: DataTypes.UUID,  // foreign key
-            allowNull: true,
-            defaultValue: null,
-            validate: {
-                isUUID: 4,
-            },
-            
-        },
-        oragnization_id: {
-            type: DataTypes.UUID, // foreign key
-            validate: {
-                isUUID: 4,
-            },
-            
-        },
         product_name: { 
             type: DataTypes.STRING, 
         },
@@ -32,7 +16,6 @@ module.exports = (sequelize, DataTypes) => {
             validate: {
                 min: 1
             },
-            
         },
         product_code: { 
             type: DataTypes.STRING, 
@@ -46,9 +29,9 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Product.associate = (models) => {
-        Product.belongsTo(models.organization, { foreignKey: 'oragnization_id' })
-        Product.belongsTo(models.product, {as: 'parentProduct', foreignKey: 'parent_product_id'})
-        Product.hasMany(models.product, {as: 'childernProduct', foreignKey: 'parent_product_id', onDelete: 'SET NULL'})
+        Product.belongsTo(models.organization, {as: 'oragnization', foreignKey: 'oragnization_id' })
+        Product.belongsTo(models.product, {as: 'parentProduct', foreignKey: 'parent_product_id' })
+        Product.hasMany(models.product, {as: 'childernProduct', foreignKey: 'parent_product_id', onDelete: 'SET NULL' })
     };
     
     return Product;

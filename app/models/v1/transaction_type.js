@@ -15,9 +15,7 @@ module.exports = (sequelize, DataTypes) => {
         paranoid: true
     });
 
-    TransactionType.associate = (models) => {
-        // TransactionType.belongsTo(models.financial_transaction, { foreignKey: 'transaction_type_id' })
-    };
+    TransactionType.associate = (models) => {};
     
     return TransactionType;
 }

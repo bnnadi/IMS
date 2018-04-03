@@ -32,7 +32,12 @@ gulp.task('test-db', function() {
 });
 
 gulp.task('local-db-force', function() {
-    return db.sequelize.sync({ force: true }).catch();
+    return db
+            .sequelize
+            .query('SET FOREIGN_KEY_CHECKS = 0', {raw: true})
+            .then(function(results) {
+                db.sequelize.sync({force: true});
+            }).catch();
 });
 
 gulp.task('local-db', function() {
@@ -284,7 +289,123 @@ gulp.task('v1-create-admin', () => {
     return Employee
         .create(admin)
         .then((admin) => {
-            console.log(admin);
+            Assignment
+                .create()
+                .then(assign => {
+                    admin.setAssignment(assign.date_from)
+                })
+            Address
+                .create({
+                    address_line_1: chance.address(),
+                    town_city: chance.city(),
+                    state_county_province: chance.state({ full: true }),
+                    country: chance.country({ full: true }),
+                })
+                .then(address => {
+                    admin.setAddress(address.address_id);
+                })
+
+            Phone
+                .create({
+                    phone_number: chance.phone({ formatted: false })
+                })
+                .then(phone => {
+                    admin.setPhone( phone.phone_number_id);
+                })
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+});
+
+gulp.task('v1-create-sales-manager', () => {
+    var Employee = db.employee;
+    var Assignment = db.employee_assignment;
+    var Address = db.address;
+    var Phone = db.phone_number;
+
+    var smanage = {
+        email: 'smanager@example.com',
+        first_name: chance.first(),
+        last_name: chance.last(),
+        password: 'password1',
+        permission_level_code: 3
+    };
+
+
+    return Employee
+        .create(smanage)
+        .then((smanage) => {
+            Assignment
+                .create()
+                .then(assign => {
+                    smanage.setAssignment(assign.date_from)
+                })
+            Address
+                .create({
+                    address_line_1: chance.address(),
+                    town_city: chance.city(),
+                    state_county_province: chance.state({ full: true }),
+                    country: chance.country({ full: true }),
+                })
+                .then(address => {
+                    smanage.setAddress(address.address_id);
+                })
+
+            Phone
+                .create({
+                    phone_number: chance.phone({ formatted: false })
+                })
+                .then(phone => {
+                    smanage.setPhone( phone.phone_number_id);
+                })
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+});
+
+gulp.task('v1-create-product-manager', () => {
+    var Employee = db.employee;
+    var Assignment = db.employee_assignment;
+    var Address = db.address;
+    var Phone = db.phone_number;
+
+    var smanage = {
+        email: 'pmanager1@example.com',
+        first_name: chance.first(),
+        last_name: chance.last(),
+        password: 'password1',
+        permission_level_code: 3
+    };
+
+
+    return Employee
+        .create(smanage)
+        .then((pmanage) => {
+            Assignment
+                .create()
+                .then(assign => {
+                    pmanage.setAssignment(assign.date_from)
+                })
+            Address
+                .create({
+                    address_line_1: chance.address(),
+                    town_city: chance.city(),
+                    state_county_province: chance.state({ full: true }),
+                    country: chance.country({ full: true }),
+                })
+                .then(address => {
+                    pmanage.setAddress(address.address_id);
+                })
+
+            Phone
+                .create({
+                    phone_number: chance.phone({ formatted: false })
+                })
+                .then(phone => {
+                    pmanage.setPhone( phone.phone_number_id);
+                }) 
         })
         .catch((err) => {
             console.log(err);
@@ -296,6 +417,8 @@ gulp.task('v1-create-guard', () => {
     var Assignment = db.employee_assignment;
     var Address = db.address;
     var Phone = db.phone_number;
+
+    var n = Math.ceil(Math.random(20))
 
     var guard = {
         email: 'guard@example.com',
@@ -309,34 +432,29 @@ gulp.task('v1-create-guard', () => {
     return Employee
         .create(guard)
         .then((guard) => {
-            var addyId = phoneId = null;
+            Assignment
+                .create()
+                .then(assign => {
+                    guard.setAssignment(assign.date_from)
+                })
             Address
                 .create({
-                    person_id: guard.employyee_id,
                     address_line_1: chance.address(),
                     town_city: chance.city(),
                     state_county_province: chance.state({ full: true }),
                     country: chance.country({ full: true }),
                 })
                 .then(address => {
-                    console.log(address)
-                    addyId = address.address_id
+                    guard.setAddress(address.address_id);
                 })
 
             Phone
                 .create({
-                    person_id: guard.employyee_id,
                     phone_number: chance.phone({ formatted: false })
                 })
                 .then(phone => {
-                    console.log(phone)
-                    phoneId = phone.phone_number_id
+                    guard.setPhone( phone.phone_number_id);
                 })
-
-            if(addyId)
-                guard.addAddress(addyId);
-            if(phoneId)
-                guard.addPhone(phoneId);
  
         })
         .catch((err) => {
@@ -351,7 +469,7 @@ gulp.task('v1-create-factory', () => {
     var Phone = db.phone_number;
 
     var factory = {
-        email: 'factory@example.com',
+        email: 'factory3@example.com',
         first_name: chance.first(),
         last_name: chance.last(),
         password: 'password1',
@@ -362,32 +480,30 @@ gulp.task('v1-create-factory', () => {
     return Employee
         .create(factory)
         .then((factory) => {
-            var addyId = phoneId = null;
+            Assignment
+                .create()
+                .then(assign => {
+                    factory.setAssignment(assign.date_from)
+                })
+           
             Address
                 .create({
-                    person_id: factory.employyee_id,
                     address_line_1: chance.address(),
                     town_city: chance.city(),
                     state_county_province: chance.state({ full: true }),
                     country: chance.country({ full: true }),
                 })
                 .then(address => {
-                    addyId = address.address_id
+                    factory.setAddress(address.address_id);
                 })
 
             Phone
                 .create({
-                    person_id: factory.employyee_id,
                     phone_number: chance.phone({ formatted: false })
                 })
                 .then(phone => {
-                    phoneId = phone.phone_number_id
+                    factory.setPhone( phone.phone_number_id);
                 })
-
-            if(addyId)
-                factory.addAddress(addyId);
-            if(phoneId)
-                factory.addPhone(phoneId);
         })
         .catch((err) => {
             console.log(err);
@@ -413,36 +529,33 @@ gulp.task('v1-create-agent', () => {
     return Employee
         .create(agent)
         .then((agent) => {
-            var addyId = phoneId = null;
+            Assignment
+                .create()
+                .then(assign => {
+                    agent.setAssignment(assign.date_from)
+                })
             Address
                 .create({
-                    person_id: agent.employyee_id,
                     address_line_1: chance.address(),
                     town_city: chance.city(),
                     state_county_province: chance.state({ full: true }),
                     country: chance.country({ full: true }),
                 })
                 .then(address => {
-                    addyId = address.address_id
+                    agent.setAddress(address.address_id);
                 })
 
             Phone
                 .create({
-                    person_id: agent.employyee_id,
                     phone_number: chance.phone({ formatted: false })
                 })
                 .then(phone => {
-                    phoneId = phone.phone_number_id
+                    agent.setPhone( phone.phone_number_id);
                 })
-
-            if(addyId)
-                agent.addAddress(addyId);
-            if(phoneId)
-                agent.addPhone(phoneId);
         })
         .catch((err) => {
             console.log(err);
         });
 });
 
-gulp.task('v1',['v1-create-organization','v1-create-permission-levels','v1-create-roles','v1-create-transaction-types','v1-create-admin','v1-create-guard', 'v1-create-agent', 'v1-create-factory']);
+gulp.task('v1-create',['v1-create-organization','v1-create-permission-levels','v1-create-roles','v1-create-transaction-types','v1-create-admin','v1-create-product-manager','v1-create-sales-manager','v1-create-agent', 'v1-create-guard', 'v1-create-factory']);

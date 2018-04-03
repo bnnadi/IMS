@@ -7,12 +7,6 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true
         },
-        person_id: {
-            type: DataTypes.UUID, // foreign key
-            validate: {
-                isUUID: 4,
-            },
-        },
         address_line_1: DataTypes.STRING,
         address_line_2: DataTypes.STRING,
         address_line_3: DataTypes.STRING,

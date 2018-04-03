@@ -58,7 +58,8 @@
     "request-param": "1.0.1",
     "sequelize": "4.22.8",
     "sequelize-cli": "3.0.0",
-    "uuid": "3.1.0"
+    "uuid": "3.1.0",
+    "vcf": "^2.0.1"
   },
   "devDependencies": {
     "chalk": "2.3.0",
