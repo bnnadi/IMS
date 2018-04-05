@@ -491,4 +491,20 @@ controller.before([
 
 });
 
+// controller.before([
+//     'generateQRCode'
+// ], (req, res, next) => {
+
+//     if (!req.isAuthenticated() || !req.user.isManager()) {
+//         res.status(401);
+//         res.json({
+//             errors: 'UNAUTHORIZED'
+//         });
+//         return;
+//     }
+
+//     next();
+
+// });
+
 module.exports = controller;
