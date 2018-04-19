@@ -411,6 +411,7 @@ controller.deleteOne = (req, res, next) => {
     var id = req.params.id;
 
     // TODO: need to make sure certain people are allowed to do this
+    // async.series()
 
     var record = {};
 
@@ -461,9 +462,11 @@ controller.generateQRCode = (req, res, next) => {
 
     EmployeeModel
         .findById(id)
-        .then((user) => {
+        .then((employee) => {
+            vCard.add()
+            res.status(201);
             res.json({
-                result: user.toJSON()
+                result: "Card was created",
             });
             return;
         }).catch((err) => {

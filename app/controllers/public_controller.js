@@ -93,7 +93,7 @@ controller.login = (req, res, next) => {
 
     }
 
-    passport.authenticate('v1-local-user', (err, result, info) => {
+    passport.authenticate('v1-local-user', { session: false },(err, result, info) => {
 
         if (err) {
             errors = ['NNC-01001'];
@@ -117,7 +117,6 @@ controller.login = (req, res, next) => {
             return;
 
         }
-        // req.logout();
 
         req.logIn(result, (err) => {
 
@@ -141,8 +140,11 @@ controller.login = (req, res, next) => {
                 profile_img: '' // figure this nonesense out
             };
 
+            // const token = jwt.sign({ id: user.id, }, process.env.JWT_KEY, { expiresInMinutes: 120 });
+
             res.json({
-                result: user
+                result: user,
+                // token: token
             });
             return;
 

@@ -4,6 +4,9 @@ var fs = require('fs');
 var path = require('path');
 var passport = require('passport');
 
+// const expressJwt = require('express-jwt');  
+// const authenticate_user = expressJwt({secret : process.env.JWT_KEY});
+
 var public = require(BACKEND + '/controllers/public_controller');
 var middleware = require(CONFIG + '/middleware/route');
 
@@ -18,7 +21,6 @@ var v1Organization = require(BACKEND + '/controllers/api/v1/organization_control
 var v1User = require(BACKEND + '/controllers/api/v1/user_controller');
 
 module.exports = function routes() {
-
     // access
     this.post('/api/v1/login.json', public.login);
     this.get('/api/v1/logout', public.logout);
