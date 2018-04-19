@@ -1,4 +1,4 @@
--#!/bin/sh      
+#!/bin/sh      
 ssh bisike@104.131.95.157 <<EOF        
  cd /var/www/denadis.com 
  git pull       
