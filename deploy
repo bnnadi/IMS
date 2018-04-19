@@ -1,6 +1,6 @@
 -#!/bin/sh      
-ssh userName@development-server-ip <<EOF        
- cd /your-project-path  
+ssh bisike@104.131.95.157 <<EOF        
+ cd /var/www/denadis.com 
  git pull       
  npm install --production       
  pm2 restart all
