@@ -1,9 +1,9 @@
 // libraries
-var async = require('async');
-var fs = require('fs');
-var jsSchema = require('js-schema');
-var jwt = require('jsonwebtoken');
-var passport = require('passport');
+const async = require('async');
+const fs = require('fs');
+const jsSchema = require('js-schema');
+const jwt = require('jsonwebtoken');
+const passport = require('passport');
 
 // classes
 var Controller = require('./base_controller');
@@ -93,7 +93,7 @@ controller.login = (req, res, next) => {
 
     }
 
-    passport.authenticate('v1-local-user', {}, (err, result, info) => {
+    passport.authenticate('v1-local-user', { session: false }, (err, result, info) => {
 
         if (err) {
             errors = ['NNC-01001'];
@@ -141,7 +141,7 @@ controller.login = (req, res, next) => {
                 profile_img: '' // figure this nonesense out
             };
 
-            const token = jwt.sign({ id: user.id, }, process.env.JWT_KEY, {});
+            const token = jwt.sign({ _id: user.id, }, process.env.JWT_KEY, { expiresIn: 21600}); // expires in 6 hours
 
             res.json({
                 user: user,
@@ -157,45 +157,39 @@ controller.login = (req, res, next) => {
 
 controller.logout = (req, res, next) => {
 
-    req.logout();
-
-    req
-        .session
-        .destroy(function(err) {
-            res.redirect('/login');
-        });
+    res.status(200).send({ token: null, user: null, message: 'logged out' });
 
 };
 
-controller.before([
-    'login',
-], (req, res, next) => {
+// controller.before([
+//     'login',
+// ], (req, res, next) => {
 
-    if (req.isAuthenticated()) {
-        res.status(200);
-        res.json({
-            result: req.user
-        });
-        return;
-    }
+//     if (req.isAuthenticated()) {
+//         res.status(200);
+//         res.json({
+//             result: req.user
+//         });
+//         return;
+//     }
 
-    next();
+//     next();
 
-});
+// });
 
-controller.before([
-    'index',
-], (req, res, next) => {
+// controller.before([
+//     'index',
+// ], (req, res, next) => {
 
-    if (req.isAuthenticated()) {
+//     if (req.isAuthenticated()) {
 
-        res.redirect('/');
-        return;
-    }
+//         res.redirect('/');
+//         return;
+//     }
 
-    next();
+//     next();
 
-});
+// });
 
 
 

@@ -15,6 +15,15 @@ var config = {
 
 if (env === 'production') {
     config.logging = false;
+    config.maxConcurrentQueries = 100;
+    config.dialectOptions = {
+        ssl:'Amazon RDS'
+    };
+    config.pool = {
+        maxConnections: 5,
+        maxIdleTime: 30
+    };
+    config.language = 'en';
 }
 
 if (env === 'production') {
