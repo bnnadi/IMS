@@ -103,7 +103,7 @@ module.exports = function() {
     this.use(expressSession({
 		secret: 'asdhwhnxxiou1mizxehdncfx3gx',
 		cookie: {
-			maxAge: 3 * 24 * 60 * 60 * 1000
+			maxAge: 600000
 		},
 		resave: true,
 		saveUninitialized: true,

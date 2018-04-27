@@ -98,8 +98,9 @@ module.exports = (sequelize, DataTypes) => {
         Employee.hasMany(models.employee_assignment, { foreignKey: 'reportsTo_id', onDelete: 'SET NULL', allowNull: true, defaultValue: null });
         Employee.hasMany(models.internal_message_assignment, { as: 'sentMessages', foreignKey: 'msg_from_person_id' });
         Employee.hasMany(models.internal_message_assignment, { as: 'receivedMessages', foreignKey: 'msg_to_person_id' });
-        Employee.hasMany(models.image, { foreignKey: 'imageFor_id' })
-        Employee.belongsTo(models.image, { as: 'ProfilePicture', foreignKey: 'profilePic_id', constraints: false })
+        Employee.hasMany(models.image, { foreignKey: 'imageFor_id' });
+        Employee.belongsTo(models.image, { as: 'ProfilePicture', foreignKey: 'profilePic_id', constraints: false });
+        Employee.hasOne(models.setting, { foreignKey: 'employee_id', onDelete: 'CASCADE'});
     };
 
     Employee.beforeValidate((employee, options) => {

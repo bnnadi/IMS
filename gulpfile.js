@@ -276,6 +276,7 @@ gulp.task('v1-create-admin', () => {
     var Assignment = db.employee_assignment;
     var Address = db.address;
     var Phone = db.phone_number;
+    var Setting = db.setting;
 
     var admin = {
         email: 'admin@example.com',
@@ -289,6 +290,11 @@ gulp.task('v1-create-admin', () => {
     return Employee
         .create(admin)
         .then((admin) => {
+            Setting
+                .create()
+                .then(setting => {
+                    admin.setSetting(admin.employee_id);
+                })
             Assignment
                 .create()
                 .then(assign => {
@@ -323,6 +329,7 @@ gulp.task('v1-create-sales-manager', () => {
     var Assignment = db.employee_assignment;
     var Address = db.address;
     var Phone = db.phone_number;
+    var Setting = db.setting;
 
     var smanage = {
         email: 'smanager@example.com',
@@ -336,6 +343,11 @@ gulp.task('v1-create-sales-manager', () => {
     return Employee
         .create(smanage)
         .then((smanage) => {
+            Setting
+                .create()
+                .then(setting => {
+                    smanage.setSetting(smanage.employee_id);
+                })
             Assignment
                 .create()
                 .then(assign => {
@@ -370,8 +382,9 @@ gulp.task('v1-create-product-manager', () => {
     var Assignment = db.employee_assignment;
     var Address = db.address;
     var Phone = db.phone_number;
+    var Setting = db.setting;
 
-    var smanage = {
+    var pmanage = {
         email: 'pmanager1@example.com',
         first_name: chance.first(),
         last_name: chance.last(),
@@ -381,8 +394,13 @@ gulp.task('v1-create-product-manager', () => {
 
 
     return Employee
-        .create(smanage)
+        .create(pmanage)
         .then((pmanage) => {
+            Setting
+                .create()
+                .then(setting => {
+                    pmanage.setSetting(pmanage.employee_id);
+                })
             Assignment
                 .create()
                 .then(assign => {
@@ -417,6 +435,7 @@ gulp.task('v1-create-guard', () => {
     var Assignment = db.employee_assignment;
     var Address = db.address;
     var Phone = db.phone_number;
+    var Setting = db.setting;
 
     var n = Math.ceil(Math.random(20))
 
@@ -432,6 +451,11 @@ gulp.task('v1-create-guard', () => {
     return Employee
         .create(guard)
         .then((guard) => {
+            Setting
+                .create()
+                .then(setting => {
+                    guard.setSetting(guard.employee_id);
+                })
             Assignment
                 .create()
                 .then(assign => {
@@ -467,6 +491,7 @@ gulp.task('v1-create-factory', () => {
     var Assignment = db.employee_assignment;
     var Address = db.address;
     var Phone = db.phone_number;
+    var Setting = db.setting;
 
     var factory = {
         email: 'factory3@example.com',
@@ -480,6 +505,11 @@ gulp.task('v1-create-factory', () => {
     return Employee
         .create(factory)
         .then((factory) => {
+            Setting
+                .create()
+                .then(setting => {
+                    factory.setSetting(factory.employee_id);
+                })
             Assignment
                 .create()
                 .then(assign => {
@@ -516,6 +546,7 @@ gulp.task('v1-create-agent', () => {
     var Assignment = db.employee_assignment;
     var Address = db.address;
     var Phone = db.phone_number;
+    var Setting = db.setting;
 
     var agent = {
         email: 'agent@example.com',
@@ -529,6 +560,11 @@ gulp.task('v1-create-agent', () => {
     return Employee
         .create(agent)
         .then((agent) => {
+            Setting
+                .create()
+                .then(setting => {
+                    agent.setSetting(agent.employee_id);
+                })
             Assignment
                 .create()
                 .then(assign => {

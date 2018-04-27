@@ -4,7 +4,7 @@ var async = require('async');
 var fs = require('fs');
 var jsSchema = require('js-schema');
 var generatePsswrd = require('password-generator');
-var vCard = require('vcf')
+var vCard = require('vcf');
 
 var Mailer = require(ROOT + '/app/helpers/mailer');
 
@@ -21,6 +21,7 @@ var AddressModel = db.address;
 var AssignmentModel = db.employee_assignment;
 var EmployeeModel = db.employee;
 var PhoneModel = db.phone_number;
+var SettingModel = db.setting;
 var OrganizationModel = db.organization;
 var OrganizationUnitModel = db.organization_units;
 
@@ -57,7 +58,7 @@ controller.createOne = (req, res, next) => {
 
             async.parallel({
                 assign: function(callback) {
-                    Assignment
+                    AssignmentModel
                         .create()
                         .then(assign => {
                             employee.setAssignment(assign.date_from)
@@ -67,7 +68,7 @@ controller.createOne = (req, res, next) => {
                         })
                 },
                 address: function(callback) {
-                    Address
+                    AddressModel
                         .create(address)
                         .then(address => {
                             employee.setAddress(address.address_id);
@@ -77,12 +78,19 @@ controller.createOne = (req, res, next) => {
                         })
                 },
                 phone: function(callback) {     
-                    Phone
+                    PhoneModel
                         .create({
                             phone_number: chance.phone({ formatted: false })
                         })
                         .then(phone => {
                             employee.setPhone( phone.phone_number_id);
+                        })
+                },
+                setting: function(callback) {     
+                    SettingModel
+                        .create()
+                        .then(setting => {
+                            employee.setSetting( employee.employee_id);
                         })
                 }
             }, function(err, results) {
@@ -241,6 +249,10 @@ controller.assignnment = (req, res, next) => {
     
 };
 
+controller.addProfilePic = (req, res, next) => {
+    var user = req.user || {};
+};
+
 controller.addAddress = (req, res, next) => {
 
     var user = req.user || {};
@@ -270,7 +282,7 @@ controller.addPhoneNumber = (req, res, next) => {
 
     var record = {};
 
-    record.person_id = user._id;
+    record.phone_number = user._id;
 
     PhoneModel
         .create(record,{
@@ -282,7 +294,7 @@ controller.addPhoneNumber = (req, res, next) => {
             console.log(phone.get({plain: true}))
             console.log(created)
             res.json({
-                result: address
+                result: phone
             });
             return;
         })
@@ -300,7 +312,7 @@ controller.updateAddress = (req, res, next) => {
         .update(record, {
             where: {
                 address_id: recordId,
-                person_id: user._id
+                employee_id: user._id
             },
             returning: true,
             paranoid: true,
@@ -334,7 +346,7 @@ controller.updatePhoneNumber = (req, res, next) => {
         .update(record, {
             where: {
                 phone_number_id: recordId,
-                person_id: user._id
+                employee_id: user._id
             },
             returning: true,
             paranoid: true,
@@ -363,7 +375,7 @@ controller.removeAddress = (req, res, next) => {
 
     record.where = {
         address_id: recordId,
-        person_id: user._id
+        employee_id: user._id
     }
 
     AddressModel
@@ -388,7 +400,7 @@ controller.removePhoneNumber = (req, res, next) => {
 
     record.where = {
         phone_number_id: recordId,
-        person_id: id
+        employee_id: id
     }
 
     PhoneModel
