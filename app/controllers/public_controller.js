@@ -135,7 +135,6 @@ controller.login = (req, res, next) => {
                 id: result.id,
                 permission_level_code: result.permission_level_code,
                 email: result.email,
-                name: result.getFullName(),
                 first_name: result.first_name,
                 last_name: result.last_name,
                 profile_img: '' // figure this nonesense out
@@ -156,8 +155,8 @@ controller.login = (req, res, next) => {
 };
 
 controller.logout = (req, res, next) => {
-
-    res.status(200).send({ token: null, user: null, message: 'logged out' });
+    console.log("Logging out ....");
+    res.status(200)
 
 };
 

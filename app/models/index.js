@@ -6,11 +6,13 @@ var path = require('path');
 var Sequelize = require('sequelize');
 var env = process.env.NODE_ENV || 'development';
 var config = {
+    'host': process.env.DATABASE_URL,
     'database_name': process.env.DB_NAME,
     'username': process.env.DB_USERNAME,
     'password': process.env.DB_PASSWORD,
     'dialect': process.env.DB_DIALECT,
-    'port': process.env.DB_PORT
+    'port': process.env.DB_PORT,
+    language: 'en'
 };
 
 if (env === 'production') {
@@ -23,14 +25,10 @@ if (env === 'production') {
         maxConnections: 5,
         maxIdleTime: 30
     };
-    config.language = 'en';
 }
 
-if (env === 'production') {
-    var sequelize = new Sequelize(process.env.DATABASE_URL, config);
-} else {
-    var sequelize = new Sequelize(config.database_name, config.username, config.password, config);
-}
+var sequelize = new Sequelize(config.database_name, config.username, config.password, config);
+
 
 var db = {},
 dir = __dirname +'/'+ process.env.VERSION;

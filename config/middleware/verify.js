@@ -1,5 +1,9 @@
 
 const jwt = require('jsonwebtoken');
+
+const db = require(BACKEND + '/models');
+var EmployeeModel = db.employee;
+
 var Routes = function() {};
 
 Routes.apiKey = (req, res, next) => {
@@ -18,9 +22,23 @@ Routes.access = (req, res, next) => {
         return;
     }
     jwt.verify(token, process.env.JWT_KEY, function(err, decoded) {
-        if (err) return res.status(500).send({ token: null, user: null, message: 'Failed to authenticate token.' });
-        req.user = decoded;
-        next();
+        if (err || !decoded) return res.status(500).send({ token: null, user: null, message: 'Failed to authenticate token.' });
+       console.log(decoded);
+        EmployeeModel
+            .findById(decoded._id)
+            .then((user) => {
+                req.user = {
+                    '_id': user.employee_id,
+                    'permission_level_code': user.permission_level_code,
+                    'canDelete': user.canDelete(),
+                    'isManager': user.isManager() 
+                };
+                next();
+            })
+            .catch(err => {
+                console.log(err);
+                return res.status(500).send({ token: null, user: null, message: 'user is not found' });
+            })
       });
 }
 
