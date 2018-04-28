@@ -14,17 +14,18 @@ var config = {
     'port': process.env.DB_PORT,
     'language': 'en'
 };
-console.log(env)
+
 if (env === 'production') {
     config.logging = false;
     // config.dialectOptions = {
     //     ssl:'Amazon RDS'
     // };
     config.pool = {
-        max: 100,
-        min: 20,
-        idle: 30000,
-        acquire: 60000,
+        max: 5,
+        min: 0,
+        idle: 20000,
+        acquire: 20000,
+        autostart: true
     };
 }
 
