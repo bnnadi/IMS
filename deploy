@@ -1,8 +1,0 @@
-#!/bin/sh      
-ssh bisike@104.131.95.157 <<EOF        
- cd /var/repo/ndeputa.git
- git pull       
- npm install --production       
- pm2 restart all
- exit       
-EOF
