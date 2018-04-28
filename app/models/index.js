@@ -12,18 +12,19 @@ var config = {
     'password': process.env.DB_PASSWORD,
     'dialect': process.env.DB_DIALECT,
     'port': process.env.DB_PORT,
-    language: 'en'
+    'language': 'en'
 };
-
+console.log(env)
 if (env === 'production') {
     config.logging = false;
-    config.maxConcurrentQueries = 100;
-    config.dialectOptions = {
-        ssl:'Amazon RDS'
-    };
+    // config.dialectOptions = {
+    //     ssl:'Amazon RDS'
+    // };
     config.pool = {
-        maxConnections: 5,
-        maxIdleTime: 30
+        max: 100,
+        min: 20,
+        idle: 30000,
+        acquire: 60000,
     };
 }
 
