@@ -4,11 +4,11 @@ sudo: false
 node_js:
   - "6"
 install:
-
+  - npm install
 deploy:
   skip_cleanup: true
   provider: script
-  script: bash scripts/deploy.sh
+  script: bash deploy.sh $TRAVIS_BRANCH
   on:
     all_branches: true
-    condition: $TRAVIS_BRANCH =~ ^development|production$
+    condition: $TRAVIS_BRANCH =~ ^development|master$
