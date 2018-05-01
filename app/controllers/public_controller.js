@@ -160,6 +160,14 @@ controller.logout = (req, res, next) => {
 
 };
 
+controller.pong = (req, res, next) => {
+    res.json({
+        result: 'PONG'
+    });
+    return;
+
+};
+
 // controller.before([
 //     'login',
 // ], (req, res, next) => {

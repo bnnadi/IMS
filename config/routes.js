@@ -21,6 +21,8 @@ var v1Organization = require(BACKEND + '/controllers/api/v1/organization_control
 var v1User = require(BACKEND + '/controllers/api/v1/user_controller');
 
 module.exports = function routes() {
+    // api check
+    this.get('api/v1/ping.json', public.pong);
     // access
     this.post('/api/v1/login.json', public.login);
     this.get('/api/v1/logout', public.logout);
