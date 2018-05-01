@@ -1,12 +1,5 @@
 #!/bin/bash
 ENV=$1
- function sshtmp
- {
-     ssh -o "ConnectTimeout 3" \
-         -o "StrictHostKeyChecking no" \
-         -o "UserKnownHostsFile /dev/null" \
-              "$@"
- }
 
 if $ENV === 'development'
 user='dev'
@@ -15,7 +8,7 @@ then
 user='nnadi'
 host= 159.65.39.38
 fi
-sshtmp $user@$host << EOF
+ssh -o "StrictHostKeyChecking no" $user@$host << EOF
 cd ndeputa
 git pull
 npm install --production
