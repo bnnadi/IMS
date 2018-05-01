@@ -1,0 +1,14 @@
+
+language: node_js
+sudo: false
+node_js:
+  - "6"
+install:
+
+deploy:
+  skip_cleanup: true
+  provider: script
+  script: bash scripts/deploy.sh
+  on:
+    all_branches: true
+    condition: $TRAVIS_BRANCH =~ ^development|production$
