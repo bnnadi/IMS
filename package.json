@@ -4,7 +4,7 @@
   "description": "Node inventory management system with barcode scanning",
   "main": "server.js",
   "scripts": {
-    "start": "concurrently \"node server.js\" \"cd public/\" \"ng build -aot\"",
+    "start": "concurrently \"node server.js\" \"cd public/\" \"ng build -aot\""
   },
   "repository": {
     "type": "git",
