@@ -11,6 +11,6 @@ fi
 $ ssh $user@$host << EOF
 cd ndeputa
 git pull
-npm i
+npm install --production
 pm2 restart all
 EOF
