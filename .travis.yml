@@ -15,7 +15,7 @@ deploy:
   provider: script
   before_script:
     - echo -e "Host heroku.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
-  script: deploy.sh $TRAVIS_BRANCH
+  script: ./deploy.sh $TRAVIS_BRANCH
   on:
     all_branches: true
     condition: $TRAVIS_BRANCH =~ ^development|master$
