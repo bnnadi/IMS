@@ -14,7 +14,11 @@ deploy:
   skip_cleanup: true
   provider: script
   before_script:
-    - echo -e "Host heroku.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+    - if $TRAVIS_BRANCH === 'development'
+    - echo -e "104.131.110.212\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+    - then
+    - echo -e "159.65.39.38\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+    - fi
   script: ./deploy.sh $TRAVIS_BRANCH
   on:
     all_branches: true
