@@ -4,9 +4,10 @@ sudo: false
 node_js:
   - "node"
 install:
+  - echo 'KEY' >> $HOME/.ssh/known_hosts
   - npm install
 addons:
-  ssh_known_hosts:
+  ssh-keyscan:
   - 104.131.110.212
   - 159.65.39.38
 deploy:
