@@ -5,9 +5,15 @@ node_js:
   - "node"
 install:
   - npm install
+addons:
+  ssh_known_hosts:
+  - 104.131.110.212
+  - 159.65.39.38
 deploy:
   skip_cleanup: true
   provider: script
+  before_script:
+    - echo -e "Host heroku.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
   script: deploy.sh $TRAVIS_BRANCH
   on:
     all_branches: true

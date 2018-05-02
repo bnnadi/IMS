@@ -8,7 +8,8 @@ then
 user='nnadi'
 host= 159.65.39.38
 fi
-ssh -o "StrictHostKeyChecking=accept-new" $user@$host << EOF
+
+ssh -o "StrictHostKeyChecking=no" $user@$host << EOF
 cd ndeputa
 git pull
 npm install --production
