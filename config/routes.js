@@ -60,7 +60,7 @@ module.exports = function routes() {
     this.get('/api/v1/employees.json', verify.access , v1Employee.readMany);
     this.put('/api/v1/employee.json', verify.access , v1Employee.updateOne);
     this.delete('/api/v1/employee/:id.json', verify.access , v1Employee.deleteOne);
-    this.post('/api/v1/employee/:id/addAddress.json', verify.access , v1Employee.addAddress);
+    this.post('/api/v1/employee/:id/`addAddress`.json', verify.access , v1Employee.addAddress);
     this.post('/api/v1/employee/:id/addPhoneNumber.json', verify.access , v1Employee.addPhoneNumber);
     this.put('/api/v1/employee/:id/updateAddress.json', verify.access , v1Employee.updateAddress);
     this.put('/api/v1/employee/:id/updatePhoneNumber.json', verify.access , v1Employee.updatePhoneNumber);
@@ -99,7 +99,7 @@ module.exports = function routes() {
     this.get('/api/v1/timesheet.json', verify.access , v1Time.readOne);
     this.get('/api/v1/timesheets.json', verify.access , v1Time.readMany);
     this.put('/api/v1/timesheet.json', verify.access , v1Time.updateOne);
-    this.delete('/api/v1/timesheets/:id.json', verify.access , v1Time.deleteOne);
+    this.delete('/api/v1/timesheet/:id.json', verify.access , v1Time.deleteOne);
 
     // user
     this.get('/api/v1/user/authenticate', verify.access , v1User.authenticate);
