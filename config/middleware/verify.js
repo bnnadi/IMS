@@ -22,7 +22,7 @@ Routes.access = (req, res, next) => {
         return;
     }
     jwt.verify(token, process.env.JWT_KEY, function(err, decoded) {
-        if (err || !decoded) return res.status(500).send({ token: null, user: null, message: 'Failed to authenticate token.' });
+        if (err || !decoded) return res.status(500).send({ isValid: false, token: null, user: null, message: 'Failed to authenticate token.' });
        console.log(decoded);
         EmployeeModel
             .findById(decoded._id)
@@ -37,7 +37,7 @@ Routes.access = (req, res, next) => {
             })
             .catch(err => {
                 console.log(err);
-                return res.status(500).send({ token: null, user: null, message: 'user is not found' });
+                return res.status(500).send({ isValid: false, token: null, user: null, message: 'user is not found' });
             })
       });
 }
