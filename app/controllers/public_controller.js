@@ -131,8 +131,8 @@ controller.login = (req, res, next) => {
                 return;
             }
 
-            var user = {
-                id: result.id,
+            const user = {
+                id: result.employee_id,
                 permission_level_code: result.permission_level_code,
                 email: result.email,
                 first_name: result.first_name,
@@ -140,8 +140,10 @@ controller.login = (req, res, next) => {
                 profile_img: '' // figure this nonesense out
             };
 
-            const token = jwt.sign({ _id: user.id, }, process.env.JWT_KEY, { expiresIn: 21600}); // expires in 6 hours
-
+            const token = jwt.sign({ _id: user.id }, process.env.JWT_KEY, { expiresIn: Math.floor(Date.now() / 1000) + (360 * 60)}); // expires in 6 hours
+            jwt.verify(token, process.env.JWT_KEY, function(err, decoded) {
+                console.log(decoded);
+            })
             res.json({
                 user: user,
                 token: token
