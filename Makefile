@@ -2,9 +2,13 @@
 all:
 	@echo "Doing all"
 
-deploy:
-	@echo "Pushing to live"
-	@git push git@104.131.110.212:~/ndeputa development
+deploy-dev:
+	@echo "Pushing to dev"
+	@git push git@159.65.174.185:~/ndeputa development
+
+deploy-prod:
+	@echo "Pushing to prod"
+	@git push git@159.65.170.42:~/ndeputa master
 
 update:
 	@echo "Makefile: Doing UPDATE stuff like grunt, gulp, rake,..."

@@ -32,9 +32,7 @@ Routes.access = (req, res, next) => {
                 console.log(user);
                 req.user = {
                     '_id': user.employee_id,
-                    'permission_level_code': user.permission_level_code,
-                    'canDelete': user.canDelete(),
-                    'isManager': user.isManager() 
+                    'permission_level_code': user.permission_level_code
                 };
                 next();
             })
