@@ -14,5 +14,5 @@ update:
 	@echo "Makefile: Doing UPDATE stuff like grunt, gulp, rake,..."
 	@whoami
 	@pwd
-	@echo "npm i"
-	@echo "ls"
+	# npm install
+	ls
