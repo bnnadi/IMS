@@ -15,4 +15,3 @@ update:
 	@whoami
 	@pwd
 	# npm install
-	ls
