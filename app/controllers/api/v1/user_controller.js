@@ -155,7 +155,6 @@ controller.addAddress = (req, res, next) => {
 
     var user = req.user || {};
 
-
     var record = {};
 
     AddressModel
