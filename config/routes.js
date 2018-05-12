@@ -28,7 +28,7 @@ module.exports = function routes() {
     this.get('/api/v1/logout', public.logout);
 
     // reset
-    // this.post('/api/v1/passwordReset.json', v1PasswordReset.start);
+    this.post('/api/v1/passwordReset.json', v1PasswordReset.start);
     // this.put('/api/v1/passwordVerify.json', v1PasswordReset.verify);
 
     // authenticate
