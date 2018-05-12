@@ -29,7 +29,7 @@ module.exports = function routes() {
 
     // reset
     this.post('/api/v1/passwordReset.json', v1PasswordReset.start);
-    // this.put('/api/v1/passwordVerify.json', v1PasswordReset.verify);
+    this.put('/api/v1/passwordVerify.json', v1PasswordReset.verify);
 
     // authenticate
     this.get('/api/v1/authenticate', verify.apiKey, public.authenticate);
