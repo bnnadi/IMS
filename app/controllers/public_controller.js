@@ -17,7 +17,7 @@ var ApiKeyModel = db.api_key;
 
 controller.index = (req, res) => {
     res.sendFile('index.html', {
-        root: ROOT + '/public/dist/'
+        root: ROOT + '/public/dashboard/'
     });
 };
 
