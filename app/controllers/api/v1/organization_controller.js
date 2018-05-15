@@ -502,7 +502,7 @@ controller.before([
     '*'
 ], (req, res, next) => {
 
-    if (!req.isAuthenticated()) {
+    if (!req.user) {
         res.status(401);
         res.json({
             errors: 'UNAUTHORIZED'
@@ -518,7 +518,7 @@ controller.before([
     'deleteOne'
 ], (req, res, next) => {
 
-    if (!req.user.canDelete()) {
+    if (req.user && req.user.permission_level_code < 3) {
         res.status(401);
         res.json({
             errors: 'UNAUTHORIZED'

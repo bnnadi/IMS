@@ -343,7 +343,7 @@ controller.before([
     '*'
 ], (req, res, next) => {
 
-    if (!req.isAuthenticated() || !req.user.isManager()) {
+    if (!req.user) {
         res.status(401);
         res.json({
             errors: 'UNAUTHORIZED'

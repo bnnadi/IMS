@@ -209,7 +209,7 @@ controller.before([
     'readMany'
 ], function(req, res, next) {
 
-    if (!req.isAuthenticated()) {
+    if (!req.user) {
         res.status(401);
         res.json({
             errors: 'UNAUTHORIZED'
@@ -226,7 +226,7 @@ controller.before([
     'deleteOne'
 ], function(req, res, next) {
 
-    if (req.isAuthenticated() && !req.user.isManager) {
+    if (req.user && req.user.permission_level_code < 3) {
         res.status(403);
         res.json({
             errors: 'FORBIDDEN'

@@ -122,13 +122,13 @@ controller.before([
     'readMany'
 ], function(req, res, next) {
 
-    if (!req.isAuthenticated()) {
+    if (!req.user) {
         res.status(401);
         res.json({
             errors: 'UNAUTHORIZED'
         });
         return;
-    } else if(req.isAuthenticated() && !req.user.isManager) {
+    } else if(req.isAuthenticated() && !req.user.permission_levek_code < 3) {
         res.status(403);
         res.json({
             errors: 'FORBIDDEN'
