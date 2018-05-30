@@ -204,38 +204,38 @@ controller.deleteOne = (req, res, next) => {
     var user = req.user || {};
 };
 
-controller.before([
-    'readOne',
-    'readMany'
-], function(req, res, next) {
+// controller.before([
+//     'readOne',
+//     'readMany'
+// ], function(req, res, next) {
 
-    if (!req.user) {
-        res.status(401);
-        res.json({
-            errors: 'UNAUTHORIZED'
-        });
-        return;
-    }
+//     if (!req.user) {
+//         res.status(401);
+//         res.json({
+//             errors: 'UNAUTHORIZED'
+//         });
+//         return;
+//     }
 
-    next();
+//     next();
 
-});
+// });
 
-controller.before([
-    'updateOne',
-    'deleteOne'
-], function(req, res, next) {
+// controller.before([
+//     'updateOne',
+//     'deleteOne'
+// ], function(req, res, next) {
 
-    if (req.user && req.user.permission_level_code < 3) {
-        res.status(403);
-        res.json({
-            errors: 'FORBIDDEN'
-        });
-        return;
-    }
+//     if (req.user && req.user.permission_level_code < 3) {
+//         res.status(403);
+//         res.json({
+//             errors: 'FORBIDDEN'
+//         });
+//         return;
+//     }
 
-    next();
+//     next();
 
-});
+// });
 
 module.exports = controller;

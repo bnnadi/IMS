@@ -24,22 +24,12 @@ Routes.access = (req, res, next) => {
 
     jwt.verify(token, process.env.JWT_KEY, function(err, decoded) {
         if (err || !decoded) return res.status(500).send({ isValid: false, token: null, user: null, message: err.message });
-       console.log(decoded);
   
-        EmployeeModel
-            .findById(decoded._id)
-            .then((user) => {
-                console.log(user);
-                req.user = {
-                    '_id': user.employee_id,
-                    'permission_level_code': user.permission_level_code
-                };
-                next();
-            })
-            .catch(err => {
-                console.log(err);
-                return res.status(500).send({ isValid: false, token: null, user: null, message: 'user is not found' });
-            })
+        req.user = {
+            '_id': decoded._id,
+            'permission_level_code': decoded.permission_level_code
+        };
+        next();
       });
 }
 

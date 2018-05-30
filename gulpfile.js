@@ -324,6 +324,59 @@ gulp.task('v1-create-admin', () => {
         });
 });
 
+gulp.task('v1-create-admin-aws', () => {
+    var Employee = db.employee;
+    var Assignment = db.employee_assignment;
+    var Address = db.address;
+    var Phone = db.phone_number;
+    var Setting = db.setting;
+
+    var admin = {
+        email: 'admin@denadis.com',
+        first_name: 'Admin',
+        last_name: 'Nnadi',
+        password: 'password1',
+        permission_level_code: 4
+    };
+
+
+    return Employee
+        .create(admin)
+        .then((admin) => {
+            Setting
+                .create()
+                .then(setting => {
+                    admin.setSetting(admin.employee_id);
+                })
+            Assignment
+                .create()
+                .then(assign => {
+                    admin.setAssignment(assign.date_from)
+                })
+            Address
+                .create({
+                    address_line_1: '13412 Splash Ct.',
+                    town_city: 'Orlando',
+                    state_county_province: 'Florida',
+                    country: 'United States',
+                })
+                .then(address => {
+                    admin.setAddress(address.address_id);
+                })
+
+            Phone
+                .create({
+                    phone_number: '4077054718'
+                })
+                .then(phone => {
+                    admin.setPhone( phone.phone_number_id);
+                })
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+});
+
 gulp.task('v1-create-sales-manager', () => {
     var Employee = db.employee;
     var Assignment = db.employee_assignment;

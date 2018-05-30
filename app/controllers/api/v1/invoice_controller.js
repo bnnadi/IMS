@@ -157,20 +157,20 @@ controller.download = (req, res, next) => {
         })
 };
 
-controller.before([
-    '*'
-], (req, res, next) => {
+// controller.before([
+//     '*'
+// ], (req, res, next) => {
 
-    if (!req.user {
-        res.status(401);
-        res.json({
-            errors: 'UNAUTHORIZED'
-        });
-        return;
-    }
+//     if (!req.user {
+//         res.status(401);
+//         res.json({
+//             errors: 'UNAUTHORIZED'
+//         });
+//         return;
+//     }
 
-    next();
+//     next();
 
-});
+// });
 
 module.exports = controller;

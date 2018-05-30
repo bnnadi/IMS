@@ -1,4 +1,5 @@
 // libraries
+var cors = require('cors');
 var express = require('express');
 var expressBodyParser = require('body-parser');
 var expressCookieParser = require('cookie-parser');
@@ -65,6 +66,8 @@ Object.defineProperty(global, 'nnFunction', {
 module.exports = function() {
 
     this.locals.ENVIRONMENT = process.env.NODE_ENV || 'development';
+
+    this.use(cors())
 
     // configure Express middleware
 

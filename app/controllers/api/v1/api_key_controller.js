@@ -116,29 +116,29 @@ controller.readMany = (req, res, next) => {
         })
 };
 
-controller.before([
-    'createOne',
-    'readOne',
-    'readMany'
-], function(req, res, next) {
+// controller.before([
+//     'createOne',
+//     'readOne',
+//     'readMany'
+// ], function(req, res, next) {
 
-    if (!req.user) {
-        res.status(401);
-        res.json({
-            errors: 'UNAUTHORIZED'
-        });
-        return;
-    } else if(req.isAuthenticated() && !req.user.permission_levek_code < 3) {
-        res.status(403);
-        res.json({
-            errors: 'FORBIDDEN'
-        });
-        return;
-    }
+//     if (!req.user) {
+//         res.status(401);
+//         res.json({
+//             errors: 'UNAUTHORIZED'
+//         });
+//         return;
+//     } else if(req.isAuthenticated() && !req.user.permission_levek_code < 3) {
+//         res.status(403);
+//         res.json({
+//             errors: 'FORBIDDEN'
+//         });
+//         return;
+//     }
 
 
-    next();
+//     next();
 
-});
+// });
 
 module.exports = controller;

@@ -177,6 +177,12 @@ controller.readMany = (req, res, next) => {
             offset: offset,
         })
         .then(sheets => {
+            sheets = sheets.rows.map(obj => {
+                obj.name = obj.getFullName();
+                console.log(obj)
+                return obj;
+            });
+            // console.log(sheets);
             res.json({
                 result: sheets
             });
