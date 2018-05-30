@@ -41,14 +41,33 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false,
         },
+        // password_reset_date: {
+        //     type: DataTypes.DATE,
+        //     allowNull: true,
+        //     defaultValue: null,
+        //     validate: {
+        //         isDate: true
+        //     }
+        // },
         gender: {
             type:   DataTypes.ENUM,
             values: ['male', 'female', 'other']
           },
-        dob: { type: DataTypes.DATE },
+        dob: { 
+            type: DataTypes.DATE,
+            allowNull: true,
+            defaultValue: null,
+            validate: {
+                isDate: true
+            }
+        },
         last_login_at: {
             type: DataTypes.DATE,
-            defaultValue: null
+            allowNull: true,
+            defaultValue: null,
+            validate: {
+                isDate: true
+            }
         },
         start_date: { 
             type: DataTypes.DATE,

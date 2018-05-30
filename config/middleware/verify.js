@@ -21,24 +21,15 @@ Routes.access = (req, res, next) => {
         res.status(401).send({ token: null, user: null, message: 'Failed to authenticate token.' })
         return;
     }
+
     jwt.verify(token, process.env.JWT_KEY, function(err, decoded) {
-        if (err || !decoded) return res.status(500).send({ token: null, user: null, message: 'Failed to authenticate token.' });
-       console.log(decoded);
-        EmployeeModel
-            .findById(decoded._id)
-            .then((user) => {
-                req.user = {
-                    '_id': user.employee_id,
-                    'permission_level_code': user.permission_level_code,
-                    'canDelete': user.canDelete(),
-                    'isManager': user.isManager() 
-                };
-                next();
-            })
-            .catch(err => {
-                console.log(err);
-                return res.status(500).send({ token: null, user: null, message: 'user is not found' });
-            })
+        if (err || !decoded) return res.status(500).send({ isValid: false, token: null, user: null, message: err.message });
+  
+        req.user = {
+            '_id': decoded._id,
+            'permission_level_code': decoded.permission_level_code
+        };
+        next();
       });
 }
 

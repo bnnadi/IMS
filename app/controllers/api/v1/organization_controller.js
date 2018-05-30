@@ -498,35 +498,35 @@ controller.removeOragnizationUnit = (req, res, next) => {
 
 };
 
-controller.before([
-    '*'
-], (req, res, next) => {
+// controller.before([
+//     '*'
+// ], (req, res, next) => {
 
-    if (!req.isAuthenticated()) {
-        res.status(401);
-        res.json({
-            errors: 'UNAUTHORIZED'
-        });
-        return;
-    }
+//     if (!req.user) {
+//         res.status(401);
+//         res.json({
+//             errors: 'UNAUTHORIZED'
+//         });
+//         return;
+//     }
 
-    next();
+//     next();
 
-});
+// });
 
-controller.before([
-    'deleteOne'
-], (req, res, next) => {
+// controller.before([
+//     'deleteOne'
+// ], (req, res, next) => {
 
-    if (!req.user.canDelete()) {
-        res.status(401);
-        res.json({
-            errors: 'UNAUTHORIZED'
-        });
-        return;
-    }
+//     if (req.user && req.user.permission_level_code < 3) {
+//         res.status(401);
+//         res.json({
+//             errors: 'UNAUTHORIZED'
+//         });
+//         return;
+//     }
 
-    next();
-});
+//     next();
+// });
 
 module.exports = controller;

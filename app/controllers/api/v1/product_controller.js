@@ -181,20 +181,20 @@ controller.deleteOne = (req, res, next) => {
 
 controller.generateBarcode = (req, res, next) => {};
 
-controller.before([
-    '*'
-], (req, res, next) => {
+// controller.before([
+//     '*'
+// ], (req, res, next) => {
 
-    if (!req.isAuthenticated() || !req.user.isManager()) {
-        res.status(401);
-        res.json({
-            errors: 'UNAUTHORIZED'
-        });
-        return;
-    }
+//     if (!req.isAuthenticated() || !req.user.isManager()) {
+//         res.status(401);
+//         res.json({
+//             errors: 'UNAUTHORIZED'
+//         });
+//         return;
+//     }
 
-    next();
+//     next();
 
-});
+// });
 
 module.exports = controller;

@@ -155,7 +155,6 @@ controller.addAddress = (req, res, next) => {
 
     var user = req.user || {};
 
-
     var record = {};
 
     AddressModel
@@ -322,7 +321,7 @@ controller.before([
     '*'
 ], (req, res, next) => {
 
-    if (!req.isAuthenticated()) {
+    if (!req.user) {
         res.status(401);
         res.json({
             errors: 'UNAUTHORIZED'

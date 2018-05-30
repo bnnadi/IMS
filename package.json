@@ -4,9 +4,7 @@
   "description": "Node inventory management system with barcode scanning",
   "main": "server.js",
   "scripts": {
-    "test": "mocha",
-    "start": "concurrently \"node server.js\" \"cd public/\" \"ng build -aot\"",
-    "express-start": "node server.js"
+    "start": "concurrently \"node server.js\" \"cd public/\" \"ng build -aot\""
   },
   "repository": {
     "type": "git",
@@ -34,6 +32,7 @@
     "concurrently": "^3.5.1",
     "connect-redis": "^3.3.3",
     "cookie-parser": "1.4.3",
+    "cors": "^2.8.4",
     "dotenv": "4.0.0",
     "express": "4.16.2",
     "express-device": "0.4.2",

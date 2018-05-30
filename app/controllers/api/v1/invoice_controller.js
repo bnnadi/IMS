@@ -15,7 +15,47 @@ var InvoiceModel = db.invoice;
 
 controller.createOne = (req, res, next) => {};
 
-controller.readOne = (req, res, next) => {};
+controller.readOne = (req, res, next) => {
+    var user = req.user || {};
+
+    var id = req.query.id || user._id;
+
+    // validate the parameters
+    var schema = jsSchema({
+        id: /^[a-f\d]{24}$/i,
+    });
+
+    var invalid = schema.errors({
+        id: id
+    });
+
+    if (invalid) {
+        
+        // res.nnBunyan(errors);
+        console.log(nnLine, new Date());
+        res.status(400);
+        res.json({
+            errors: invalid,
+        });
+        return;
+
+    }
+
+    InvoiceModel
+        .findById(id)
+        .then((user) => {
+            res.json({
+                result: user.toJSON()
+            });
+            return;
+        }).catch((err) => {
+            res.status(404);
+            res.json({
+                errors: err,
+            });
+            return;
+        });
+};
 
 controller.readMany = (req, res, next) => {
     var user = req.user || {};
@@ -117,20 +157,20 @@ controller.download = (req, res, next) => {
         })
 };
 
-controller.before([
-    '*'
-], (req, res, next) => {
+// controller.before([
+//     '*'
+// ], (req, res, next) => {
 
-    if (!req.isAuthenticated()) {
-        res.status(401);
-        res.json({
-            errors: 'UNAUTHORIZED'
-        });
-        return;
-    }
+//     if (!req.user {
+//         res.status(401);
+//         res.json({
+//             errors: 'UNAUTHORIZED'
+//         });
+//         return;
+//     }
 
-    next();
+//     next();
 
-});
+// });
 
 module.exports = controller;

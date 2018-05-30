@@ -17,7 +17,7 @@ var ApiKeyModel = db.api_key;
 
 controller.index = (req, res) => {
     res.sendFile('index.html', {
-        root: ROOT + '/public/dist/'
+        root: ROOT + '/public/dashboard/'
     });
 };
 
@@ -65,6 +65,7 @@ controller.authenticate = (req, res, next) => {
 };
 
 controller.login = (req, res, next) => {
+    console.log(req.body);
 
     var username = req.body.username;
     var password = req.body.password;
@@ -94,7 +95,7 @@ controller.login = (req, res, next) => {
     }
 
     passport.authenticate('v1-local-user', { session: false }, (err, result, info) => {
-
+ 
         if (err) {
             errors = ['NNC-01001'];
             console.log(err);
@@ -112,7 +113,7 @@ controller.login = (req, res, next) => {
             console.log(nnLine, new Date());
             res.status(404);
             res.json({
-                errors: errors,
+                errors: 'User not found',
             });
             return;
 
@@ -131,8 +132,8 @@ controller.login = (req, res, next) => {
                 return;
             }
 
-            var user = {
-                id: result.id,
+            const user = {
+                id: result.employee_id,
                 permission_level_code: result.permission_level_code,
                 email: result.email,
                 first_name: result.first_name,
@@ -140,8 +141,8 @@ controller.login = (req, res, next) => {
                 profile_img: '' // figure this nonesense out
             };
 
-            const token = jwt.sign({ _id: user.id, }, process.env.JWT_KEY, { expiresIn: 21600}); // expires in 6 hours
-
+            const token = jwt.sign({ _id: user.id, permission_level_code: user.permission_level_code }, process.env.JWT_KEY, { expiresIn: Math.floor(Date.now() / 1000) + (360 * 60)}); // expires in 6 hours
+            res.status(200)
             res.json({
                 user: user,
                 token: token
@@ -156,7 +157,15 @@ controller.login = (req, res, next) => {
 
 controller.logout = (req, res, next) => {
     console.log("Logging out ....");
-    res.status(200)
+    res.status(204)
+
+};
+
+controller.pong = (req, res, next) => {
+    res.json({
+        result: 'PONG'
+    });
+    return;
 
 };
 

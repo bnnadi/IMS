@@ -1,4 +1,5 @@
 // libraries
+var cors = require('cors');
 var express = require('express');
 var expressBodyParser = require('body-parser');
 var expressCookieParser = require('cookie-parser');
@@ -66,6 +67,8 @@ module.exports = function() {
 
     this.locals.ENVIRONMENT = process.env.NODE_ENV || 'development';
 
+    this.use(cors())
+
     // configure Express middleware
 
     // ignore all git requests
@@ -103,7 +106,7 @@ module.exports = function() {
     this.use(expressSession({
 		secret: 'asdhwhnxxiou1mizxehdncfx3gx',
 		cookie: {
-			maxAge: 600000
+			maxAge: Math.floor(Date.now() / 1000) + (360 * 60)
 		},
 		resave: true,
 		saveUninitialized: true,

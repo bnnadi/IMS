@@ -177,6 +177,12 @@ controller.readMany = (req, res, next) => {
             offset: offset,
         })
         .then(sheets => {
+            sheets = sheets.rows.map(obj => {
+                obj.name = obj.getFullName();
+                console.log(obj)
+                return obj;
+            });
+            // console.log(sheets);
             res.json({
                 result: sheets
             });
@@ -490,21 +496,21 @@ controller.generateQRCode = (req, res, next) => {
         });
 }
 
-controller.before([
-    '*'
-], (req, res, next) => {
+// controller.before([
+//     '*'
+// ], (req, res, next) => {
 
-    if (!req.isAuthenticated() || !req.user.isManager()) {
-        res.status(401);
-        res.json({
-            errors: 'UNAUTHORIZED'
-        });
-        return;
-    }
+//     if (!req.isAuthenticated() || !req.user.isManager()) {
+//         res.status(401);
+//         res.json({
+//             errors: 'UNAUTHORIZED'
+//         });
+//         return;
+//     }
 
-    next();
+//     next();
 
-});
+// });
 
 // controller.before([
 //     'generateQRCode'

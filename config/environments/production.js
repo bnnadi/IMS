@@ -6,7 +6,7 @@ module.exports = function() {
 
     var app = this;
 
-    app.use(express.static(FRONTEND + '/dist', {
+    app.use(express.static(FRONTEND + '/dashboard', {
         maxAge: 860000
     }));
 
