@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         first_name: DataTypes.STRING,
         last_name: DataTypes.STRING,
+        name: DataTypes.STRING,
         email: DataTypes.STRING,
         company: DataTypes.STRING,
         other_details: DataTypes.TEXT
@@ -32,6 +33,18 @@ module.exports = (sequelize, DataTypes) => {
         Customer.hasMany(models.order, { as: 'order', foreignKey:'customer_id', onDelete: 'CASCADE', })
         Customer.hasMany(models.payment, { as: 'payment', foreignKey:'customer_id', onDelete: 'CASCADE', })
     };
+
+    Customer.beforeCreate((customer, options) => {
+        if (!customer.permission_level_code) {
+            customer.permission_level_code = 1;
+        }
+
+        customer.name = Customer.getFullName();
+    });
+
+    Customer.prototype.getFullName = function() {
+        return [this.firstName, this.lastName].join(' ');
+    }
     
     return Customer;
 }

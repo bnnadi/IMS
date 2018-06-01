@@ -14,7 +14,11 @@ module.exports = (sequelize, DataTypes) => {
             validate: {
                 isInt: true,
             }
-        },  
+        },
+        name: { 
+            type: DataTypes.STRING(50),
+            defaultValue: null,
+        },
         first_name: { 
             type: DataTypes.STRING(50),
             allowNull: false,
@@ -130,6 +134,8 @@ module.exports = (sequelize, DataTypes) => {
         if (!employee.permission_level_code) {
             employee.permission_level_code = 1;
         }
+
+        employee.name = Employee.getFullName();
 
     });
 
