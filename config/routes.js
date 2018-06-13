@@ -37,80 +37,81 @@ module.exports = function routes() {
     this.post('/api/v1/clockInOut', verify.apiKey, v1Time.clockInOut);
 
     // api_key
-    this.post('/api/v1/generateApiKey.json', v1ApiKey.createOne);
-    this.get('/api/v1/apiKey.json', v1ApiKey.readOne);
-    this.get('/api/v1/apiKeys.json', v1ApiKey.readMany);
+    this.post('/api/v1/generateApiKey.json', verify.access, v1ApiKey.createOne);
+    this.get('/api/v1/apiKey.json', verify.access, v1ApiKey.readOne);
+    this.get('/api/v1/apiKeys.json', verify.access, v1ApiKey.readMany);
+    this.delete('/api/v1/apiKey/:id.json', verify.access, v1ApiKey.deleteOne)
 
     // customers
-    this.post('/api/v1/customer.json', v1Customer.createOne);
-    this.get('/api/v1/customer.json', v1Customer.readOne);
-    this.get('/api/v1/customers.json', v1Customer.readMany);
-    this.put('/api/v1/customer.json', v1Customer.updateOne);
-    this.post('/api/v1/customer/:id/addAddress.json', v1Customer.addAddress);
-    this.post('/api/v1/customer/:id/addPhoneNumber.json', v1Customer.addPhoneNumber);
-    this.put('/api/v1/customer/updateAddress.json', v1Customer.updateAddress);
-    this.put('/api/v1/customer/updatePhoneNumber.json', v1Customer.updatePhoneNumber);
-    this.put('/api/v1/customer/removeAddress.json', v1Customer.removeAddress);
-    this.put('/api/v1/customer/removePhoneNumber.json', v1Customer.removePhoneNumber);
-    this.delete('/api/v1/customer/:id.json', v1Customer.deleteOne);
+    this.post('/api/v1/customer.json', verify.access, v1Customer.createOne);
+    this.get('/api/v1/customer.json', verify.access, v1Customer.readOne);
+    this.get('/api/v1/customers.json', verify.access, v1Customer.readMany);
+    this.put('/api/v1/customer.json', verify.access, v1Customer.updateOne);
+    this.post('/api/v1/customer/:id/addAddress.json', verify.access, v1Customer.addAddress);
+    this.post('/api/v1/customer/:id/addPhoneNumber.json', verify.access, v1Customer.addPhoneNumber);
+    this.put('/api/v1/customer/updateAddress.json', verify.access, v1Customer.updateAddress);
+    this.put('/api/v1/customer/updatePhoneNumber.json', verify.access, v1Customer.updatePhoneNumber);
+    this.put('/api/v1/customer/removeAddress.json', verify.access, v1Customer.removeAddress);
+    this.put('/api/v1/customer/removePhoneNumber.json', verify.access, v1Customer.removePhoneNumber);
+    this.delete('/api/v1/customer/:id.json', verify.access, v1Customer.deleteOne);
 
     // employee
-    this.post('/api/v1/employee.json', v1Employee.createOne);
-    this.get('/api/v1/employee.json', v1Employee.readOne);
-    this.get('/api/v1/employees.json', v1Employee.readMany);
-    this.put('/api/v1/employee.json', v1Employee.updateOne);
-    this.delete('/api/v1/employee/:id.json', v1Employee.deleteOne);
-    this.post('/api/v1/employee/:id/addAddress.json', v1Employee.addAddress);
-    this.post('/api/v1/employee/:id/addPhoneNumber.json', v1Employee.addPhoneNumber);
-    this.put('/api/v1/employee/:id/updateAddress.json', v1Employee.updateAddress);
-    this.put('/api/v1/employee/:id/updatePhoneNumber.json', v1Employee.updatePhoneNumber);
-    this.put('/api/v1/employee/:id/removeAddress.json', v1Employee.removeAddress);
-    this.put('/api/v1/employee/:id/removePhoneNumber.json', v1Employee.removePhoneNumber);
-    this.get('/api/v1/employee/:id/generateQRCode', v1Employee.generateQRCode);
+    this.post('/api/v1/employee.json', verify.access, v1Employee.createOne);
+    this.get('/api/v1/employee.json', verify.access, v1Employee.readOne);
+    this.get('/api/v1/employees.json', verify.access, v1Employee.readMany);
+    this.put('/api/v1/employee.json', verify.access, v1Employee.updateOne);
+    this.delete('/api/v1/employee/:id.json', verify.access, v1Employee.deleteOne);
+    this.post('/api/v1/employee/:id/addAddress.json', verify.access, v1Employee.addAddress);
+    this.post('/api/v1/employee/:id/addPhoneNumber.json', verify.access, v1Employee.addPhoneNumber);
+    this.put('/api/v1/employee/:id/updateAddress.json', verify.access, v1Employee.updateAddress);
+    this.put('/api/v1/employee/:id/updatePhoneNumber.json', verify.access, v1Employee.updatePhoneNumber);
+    this.put('/api/v1/employee/:id/removeAddress.json', verify.access, v1Employee.removeAddress);
+    this.put('/api/v1/employee/:id/removePhoneNumber.json', verify.access, v1Employee.removePhoneNumber);
+    this.get('/api/v1/employee/:id/generateQRCode', verify.access, v1Employee.generateQRCode);
 
 
     // orders
-    this.post('/api/v1/order.json', v1Order.createOne);
-    this.get('/api/v1/order.json', v1Order.readOne);
-    this.get('/api/v1/orders.json', v1Order.readMany);
-    this.put('/api/v1/order.json', v1Order.updateOne);
-    this.delete('/api/v1/order/:id.json', v1Order.deleteOne);
+    this.post('/api/v1/order.json', verify.access, v1Order.createOne);
+    this.get('/api/v1/order.json', verify.access, v1Order.readOne);
+    this.get('/api/v1/orders.json', verify.access, v1Order.readMany);
+    this.put('/api/v1/order.json', verify.access, v1Order.updateOne);
+    this.delete('/api/v1/order/:id.json', verify.access, v1Order.deleteOne);
 
     // organization
-    this.post('/api/v1/organization.json', v1Organization.createOne);
-    this.get('/api/v1/organization.json', v1Organization.readOne);
-    this.get('/api/v1/organizations.json', v1Organization.readMany);
-    this.put('/api/v1/organization.json', v1Organization.updateOne);
-    this.get('/api/v1/organization/:id/units.json', v1Organization.readManyOragnizationUnit);
-    this.post('/api/v1/organization/:id/addUnit.json', v1Organization.addOragnizationUnit);
-    this.get('/api/v1/organization/:id/unit.json', v1Organization.readOragnizationUnit);
-    this.put('/api/v1/organization/:id/updateUnit.json', v1Organization.updateOragnizationUnit);
-    this.put('/api/v1/organization/:id/removeUnit.json', v1Organization.removeOragnizationUnit);
+    this.post('/api/v1/organization.json', verify.access, v1Organization.createOne);
+    this.get('/api/v1/organization.json', verify.access, v1Organization.readOne);
+    this.get('/api/v1/organizations.json', verify.access, v1Organization.readMany);
+    this.put('/api/v1/organization.json', verify.access, v1Organization.updateOne);
+    this.get('/api/v1/organization/:id/units.json', verify.access, v1Organization.readManyOragnizationUnit);
+    this.post('/api/v1/organization/:id/addUnit.json', verify.access, v1Organization.addOragnizationUnit);
+    this.get('/api/v1/organization/:id/unit.json', verify.access, v1Organization.readOragnizationUnit);
+    this.put('/api/v1/organization/:id/updateUnit.json', verify.access, v1Organization.updateOragnizationUnit);
+    this.put('/api/v1/organization/:id/removeUnit.json', verify.access, v1Organization.removeOragnizationUnit);
 
     // products
-    this.post('/api/v1/product.json', v1Product.createOne);
-    this.get('/api/v1/product.json', v1Product.readOne);
-    this.get('/api/v1/products.json', v1Product.readMany);
-    this.put('/api/v1/product.json', v1Product.updateOne);
-    this.get('/api/v1/product/:id/generateBarcode', v1Product.generateBarcode);
-    this.delete('/api/v1/product/:id.json', v1Product.deleteOne);
+    this.post('/api/v1/product.json', verify.access, v1Product.createOne);
+    this.get('/api/v1/product.json', verify.access, v1Product.readOne);
+    this.get('/api/v1/products.json', verify.access, v1Product.readMany);
+    this.put('/api/v1/product.json', verify.access, v1Product.updateOne);
+    this.get('/api/v1/product/:id/generateBarcode', verify.access, v1Product.generateBarcode);
+    this.delete('/api/v1/product/:id.json', verify.access, v1Product.deleteOne);
 
     // timesheet
-    this.get('/api/v1/timesheet.json', v1Time.readOne);
-    this.get('/api/v1/timesheets.json', v1Time.readMany);
-    this.put('/api/v1/timesheet.json', v1Time.updateOne);
-    this.delete('/api/v1/timesheet/:id.json', v1Time.deleteOne);
+    this.get('/api/v1/timesheet.json', verify.access, v1Time.readOne);
+    this.get('/api/v1/timesheets.json', verify.access, v1Time.readMany);
+    this.put('/api/v1/timesheet.json', verify.access, v1Time.updateOne);
+    this.delete('/api/v1/timesheet/:id.json', verify.access, v1Time.deleteOne);
 
     // user
-    this.get('/api/v1/user/authenticate', v1User.authenticate);
-    this.get('/api/v1/user.json', v1User.readOne);
-    this.put('/api/v1/user.json', v1User.updateOne);
-    this.post('/api/v1/user/addAddress.json', v1User.addAddress);
-    this.post('/api/v1/user/addPhoneNumber.json', v1User.addPhoneNumber);
-    this.put('/api/v1/user/updateAddress.json', v1User.updateAddress);
-    this.put('/api/v1/user/updatePhoneNumber.json', v1User.updatePhoneNumber);
-    this.put('/api/v1/user/removeAddress.json', v1User.removeAddress);
-    this.put('/api/v1/user/removePhoneNumber.json', v1User.removePhoneNumber);
+    this.get('/api/v1/user/authenticate', verify.access, v1User.authenticate);
+    this.get('/api/v1/user.json', verify.access, v1User.readOne);
+    this.put('/api/v1/user.json', verify.access, v1User.updateOne);
+    this.post('/api/v1/user/addAddress.json', verify.access, v1User.addAddress);
+    this.post('/api/v1/user/addPhoneNumber.json', verify.access, v1User.addPhoneNumber);
+    this.put('/api/v1/user/updateAddress.json', verify.access, v1User.updateAddress);
+    this.put('/api/v1/user/updatePhoneNumber.json', verify.access, v1User.updatePhoneNumber);
+    this.put('/api/v1/user/removeAddress.json', verify.access, v1User.removeAddress);
+    this.put('/api/v1/user/removePhoneNumber.json', verify.access, v1User.removePhoneNumber);
 
     this.get('/values/strings.js', function(req, res) {
 

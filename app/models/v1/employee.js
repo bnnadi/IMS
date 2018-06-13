@@ -112,8 +112,8 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Employee.associate = (models) => {
-        Employee.hasMany(models.timesheet, { as: 'authorizedTimesheets', foreignKey: 'authorizedBythis_id'});
-        Employee.hasMany(models.timesheet, { as: 'timesheets', foreignKey: 'timesheetForthis_id', onDelete: 'CASCADE'});
+        Employee.hasMany(models.timesheet, { as: 'authorizedTimesheets', foreignKey: 'timesheet_id'});
+        Employee.hasMany(models.timesheet, { as: 'timesheets', foreignKey: 'timesheet_id', onDelete: 'CASCADE'});
         Employee.hasMany(models.address, { as: 'address', foreignKey: 'employee_id', onDelete: 'CASCADE', constraints: false});
         Employee.hasMany(models.phone_number, { as: 'phone', foreignKey: 'employee_id', onDelete: 'CASCADE', constraints: false});
         Employee.hasOne(models.employee_assignment, {as: 'assignment', foreignKey: 'employee_id', onDelete: 'CASCADE'});
@@ -135,7 +135,7 @@ module.exports = (sequelize, DataTypes) => {
             employee.permission_level_code = 1;
         }
 
-        employee.name = Employee.getFullName();
+        employee.name = [employee.first_name, employee.last_name].join(' ');
 
     });
 
@@ -149,9 +149,6 @@ module.exports = (sequelize, DataTypes) => {
         return bcrypt.compareSync(password, this.password);
     };
 
-    Employee.prototype.getFullName = function() {
-        return [this.firstName, this.lastName].join(' ');
-    }
 
     Employee.prototype.isManager = function() {
         return this.permission_level_code > 3;

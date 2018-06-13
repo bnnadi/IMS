@@ -39,12 +39,8 @@ module.exports = (sequelize, DataTypes) => {
             customer.permission_level_code = 1;
         }
 
-        customer.name = Customer.getFullName();
+        customer.name = [customer.first_name, customer.last_name].join(' ');
     });
-
-    Customer.prototype.getFullName = function() {
-        return [this.firstName, this.lastName].join(' ');
-    }
     
     return Customer;
 }

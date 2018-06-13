@@ -28,8 +28,8 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Timesheet.associate = (models) => {
-        Timesheet.belongsTo(models.employee, { as: 'authorizedByEmployee_id', foreignKey: 'employee_id'})
-        Timesheet.belongsTo(models.employee, {as: 'timesheetForEmployee_id', foreignKey: 'employee_id'})
+        Timesheet.belongsTo(models.employee, { as: 'authorizedBy_id', foreignKey: 'employee_id'})
+        Timesheet.belongsTo(models.employee, { as: 'timesheetFor_id', foreignKey: 'employee_id'})
         Timesheet.belongsTo(models.organization_unit, {as: 'organizationUnit_id', foreignKey: 'organization_unit_id'})
     };
     

@@ -65,7 +65,6 @@ controller.authenticate = (req, res, next) => {
 };
 
 controller.login = (req, res, next) => {
-    console.log(req.body);
 
     var username = req.body.username;
     var password = req.body.password;

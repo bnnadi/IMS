@@ -53,6 +53,7 @@ if (process.env.NODE_ENV === 'development') {
 
 environmentsAll.call(app);
 
+app.disable('x-powered-by');
 
 var httpServer = http.createServer(app);
 

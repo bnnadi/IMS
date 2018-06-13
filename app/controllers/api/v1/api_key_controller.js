@@ -116,6 +116,35 @@ controller.readMany = (req, res, next) => {
         })
 };
 
+controller.deleteOne = (req, res, next) => {
+    const user = req.user || {};
+
+    var id = req.params.id;
+
+    // TODO: need to make sure certain people are allowed to do this
+    // async.series()
+
+    var record = {};
+
+    record.where = {
+        id: id
+    }
+
+    ApiKeyModel
+        .destory(record)
+        .then(result => {
+            res.status(204);
+            return;
+        })
+        .catch(err => {
+            res.status(500);
+            res.json({
+                errors: err
+            });
+            return;
+        })
+}
+
 // controller.before([
 //     'createOne',
 //     'readOne',
